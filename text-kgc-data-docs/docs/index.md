@@ -5,10 +5,14 @@ This package provides tools for downloading, processing, standardizing, and load
 ---
 
 ## Add to Your Project
+``` shell {.copy}
 git submodule add https://github.com/TJ-coding/TextKGCData.git packages
+```
 
 ## Installation
-pip install text-kgc-data
+``` shell {.copy}
+pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj
+```
 
 
 ## CLI Commands

@@ -13,25 +13,20 @@ TextKGCData is a Python toolkit for downloading, processing, standardizing, and 
 
 ---
 ## Add to Your Project
-git submodule add https://github.com/TJ-coding/TextKGCData.git packages
+`git submodule add https://github.com/TJ-coding/TextKGCData.git packages`
 
+## Installation
+`pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj`
 
 ## Quickstart
 
-### 1. Install dependencies
-
-```shell
-pip install mkdocs mkdocs-material
-# And any other requirements for your project
-```
-
-### 2. Download a dataset
+### 1. Download a dataset
 
 ```shell
 tkg download-text-kgc-dataset --data-dir-name WN18RR
 ```
 
-### 3. Standardize and preprocess
+### 2. Standardize and preprocess
 
 See the [WN18RR tutorial](text-kgc-data-docs/docs/wn18rr_example.md) and [Wikidata5M tutorial](text-kgc-data-docs/docs/wikidata5m_example.md) for full workflows.
 
