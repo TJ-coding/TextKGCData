@@ -58,9 +58,6 @@ def save_tkg_to_files(
 def save_tkg_to_folder(
     tkg: TextualKG,
     folder_path: str,
-    entity_id2name_save_path: str = "entity_id2name.json",
-    entity_id2description_save_path: str = "entity_id2description.json",
-    relation_id2name_save_path: str = "relation_id2name.json"
 ) -> None:
     '''Save all text data from the knowledge graph to a folder.'''
     entity_id2name_save_path = f"{folder_path}/{entity_id2name_save_path}"
