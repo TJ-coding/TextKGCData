@@ -1,10 +1,9 @@
 site_name: text-kgc-data
 site_description: Library and command-line utility for rendering projects templates.
-site_url: https://tj-coding.gitlab.io/{{project_name_kebab_cased}}
-repo_url: https://gitlab.com/TJ-coding/{{project_name_kebab_cased}}
-repo_name: tj-coding/{{project_name_kebab_cased}}
+site_url: https://tj-coding.github.io/TextKGCData/.
+repo_url: https://github.com/TJ-coding/TextKGCData
+repo_name: TJ-coding/TextKGCData
 watch: [../text_kgc_data_proj]
-edit_uri_template: 'edit/master/Document/docs/{path}?plain=1'
 nav:
   - Overview: "index.md"
   - Standardised File Format: "standardised_tkg.md"
@@ -42,7 +41,7 @@ theme:
     tag:
       labbook: octicons/beaker-24
       strategic-plan: material/strategy
-    repo: fontawesome/brands/gitlab
+    repo: fontawesome/brands/github
 
 
 extra:

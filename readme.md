@@ -1,6 +1,7 @@
 # TextKGCData: Textual Knowledge Graph Data Toolkit
 
-TextKGCData is a Python toolkit for downloading, processing, standardizing, and loading knowledge graph data with rich textual descriptions. It provides a powerful CLI and Python API for preparing datasets like WN18RR and Wikidata5M for use in text-based knowledge graph completion and related tasks.
+TextKGCData is a Python toolkit for downloading, processing, standardizing, and loading knowledge graph data with rich textual descriptions. It provides a powerful CLI and Python API for preparing datasets like WN18RR and Wikidata5M for use in text-based knowledge graph completion and related tasks. The full documentation is available at [text-kgc-data-docs](https://tj-coding.github.io/TextKGCData/).
+
 
 ---
 
@@ -13,6 +14,7 @@ TextKGCData is a Python toolkit for downloading, processing, standardizing, and 
 ---
 ## Add to Your Project
 git submodule add https://github.com/TJ-coding/TextKGCData.git packages
+
 
 ## Quickstart
 
@@ -80,9 +82,9 @@ text-kgc-data-docs/
 
 ## Documentation
 
-- Full documentation and tutorials: [docs/index.md](docs/index.md)
-- WN18RR example: [docs/wn18rr_example.md](docs/wn18rr_example.md)
-- Wikidata5M example: [docs/wikidata5m_example.md](docs/wikidata5m_example.md)
+- Full documentation and tutorials: [docs/index.md](text-kgc-data-docs/docs/index.md)
+- WN18RR example: [docs/wn18rr_example.md](text-kgc-data-docs/docs/wn18rr_example.md)
+- Wikidata5M example: [docs/wikidata5m_example.md](text-kgc-data-docs/docs/wikidata5m_example.md)
 
 ---
 
