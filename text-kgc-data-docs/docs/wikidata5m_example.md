@@ -101,6 +101,7 @@ textual_wikidata5m_kg = load_tkg_from_files(
 ---
 
 ## Notes
+- It picks the first name out of list of names provided in the original Wikidata5M files for the entity names as well as relation names.
 - All CLI commands support custom input/output paths for flexible workflows.
 - You can skip steps 4 and 5 if your data is already complete and within token limits.
 - For more details, see the main documentation or run `tkg --help`.
