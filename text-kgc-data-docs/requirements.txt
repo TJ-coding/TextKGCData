@@ -1,0 +1,10 @@
+mkdocs              # Main Framework used to make templates
+mkdocs-material     # The theme plugnin for the documentation
+mkdocs-autorefs
+markdown-exec
+mkdocstrings
+mkdocstrings-python
+mkdocs-plotly-plugin    # Used to render plotly graph. E.g. in showing the loss
+mkdocs-macros-plugin    # Used to make a custom python macros for the markdown
+mkdocs_gen_files
+mkdocs-literate-nav
