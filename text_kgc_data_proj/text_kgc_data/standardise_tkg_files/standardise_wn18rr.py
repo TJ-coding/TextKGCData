@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple
 from beartype import beartype
 import json
-from text_kgc_data_proj.text_kgc_data.helpers import text_to_tsv_triplets
+from text_kgc_data.helpers import text_to_tsvs
 
 """Preprocess WN18RR into loadable format """
 
@@ -29,7 +29,7 @@ def standardize_wn18rr_entity_files(
     with open(definitions_source_path, "r") as handle:
         entity_definitions_text = handle.read()
         
-    entity_dictionary_tsv: List[Tuple[str, ...]] = text_to_tsv_triplets(entity_definitions_text)
+    entity_dictionary_tsv: List[Tuple[str, ...]] = text_to_tsvs(entity_definitions_text)
     entity_ids, entity_names, definitions = create_word_ids_and_words_and_definitions(
         entity_dictionary_tsv
     )

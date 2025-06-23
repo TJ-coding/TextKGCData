@@ -3,7 +3,7 @@ from beartype import beartype
 import json
 
 from tqdm import tqdm
-from text_kgc_data_proj.text_kgc_data.helpers import text_to_tsvs
+from text_kgc_data.helpers import text_to_tsvs
 
 def tsvs_to_dict(tsvs: List[List[str]], file_name: Optional[str]=None)->Dict[str, str]:
     '''Wikidata5m gives multiple candidate names, we pick the first one.

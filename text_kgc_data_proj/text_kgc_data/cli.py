@@ -1,7 +1,6 @@
 from typer import Typer
 from beartype import beartype
-import deer_dataset_manager.preprocess_wn18rr as preprocess_wn18rr
-from deer_dataset_manager.download_data import download_simkgc_data
+from text_kgc_data.download_data import download_simkgc_data
 from text_kgc_data.standardise_tkg_files.standardise_wn18rr import (
     standardize_wn18rr_entity_files,
     standardize_wn18rr_relation_file,
