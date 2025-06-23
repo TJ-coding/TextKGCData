@@ -12,8 +12,8 @@ TextKGCData is a Python toolkit for downloading, processing, standardizing, and 
 - **Load**: Easily load processed data into your Python projects.
 
 ---
-## Add to Your Project
-`git submodule add https://github.com/TJ-coding/TextKGCData.git packages`
+## Add to Your Git Project
+`git submodule add https://github.com/TJ-coding/TextKGCData.git packages/text-kgc-data`
 
 ## Installation
 `pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj`
