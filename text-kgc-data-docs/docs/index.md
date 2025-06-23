@@ -137,7 +137,7 @@ text-kgc-data-docs/
 You can load processed textual knowledge graph files using the `SimKGCDataLoader`:
 
 ```python
-from deer_dataset_manager.tkg_io import load_tkg_from_files
+from text_kgc_data.tkg_io import load_tkg_from_files
 
 entity_id2name_source_path = "path/to/entity_id2name.json"  # Dict[str, str]
 entity_id2description_source_path = "path/to/entity_id2description.json" # Dict[str, str]
@@ -149,6 +149,26 @@ textual_kg = load_tkg_from_files(
     relation_id2name_source_path,
 )
 ```
+
+## Saving KG to Files
+
+You can save a `TextualKG` object to disk using the `save_tkg_to_files` function. This will export the entity and relation mappings to JSON files for later use.
+
+```python
+from text_kgc_data.tkg_io import save_tkg_to_files
+from text_kgc_data.tkg import TextualKG
+
+# Assume `textual_kg` is an instance of TextualKG
+save_tkg_to_files(
+  textual_kg,
+  "path/to/entity_id2name.json",
+  "path/to/entity_id2description.json",
+  "path/to/relation_id2name.json",
+)
+```
+
+- Make sure the output paths are writable.
+- The saved files can be loaded later using `load_tkg_from_files`.
 
 ## Notes
 - All CLI commands support custom input/output paths for flexible workflows.
