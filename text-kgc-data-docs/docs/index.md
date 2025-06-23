@@ -4,9 +4,9 @@ This package provides tools for downloading, processing, standardizing, and load
 
 ---
 
-## Add to Your Project
+## Add to Your Git Project
 ``` shell {.copy}
-git submodule add https://github.com/TJ-coding/TextKGCData.git packages
+git submodule add https://github.com/TJ-coding/TextKGCData.git packages/text-kgc-data
 ```
 
 ## Installation
