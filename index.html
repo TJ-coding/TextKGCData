@@ -668,9 +668,11 @@
 <p>This package provides tools for downloading, processing, standardizing, and loading knowledge graph data with textual descriptions. It includes a command-line interface (CLI) for all major data preparation and preprocessing steps.</p>
 <hr/>
 <h2 id="add-to-your-project">Add to Your Project<a class="headerlink" href="#add-to-your-project" title="Permanent link">¶</a></h2>
-<p>git submodule add <a href="https://github.com/TJ-coding/TextKGCData.git">https://github.com/TJ-coding/TextKGCData.git</a> packages</p>
+<div class="copy highlight"><pre><span></span><code>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/TJ-coding/TextKGCData.git<span class="w"> </span>packages
+</code></pre></div>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h2>
-<p>pip install text-kgc-data</p>
+<div class="copy highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory<span class="o">=</span>text_kgc_data_proj
+</code></pre></div>
 <h2 id="cli-commands">CLI Commands<a class="headerlink" href="#cli-commands" title="Permanent link">¶</a></h2>
 <p>All commands are available via the CLI defined in <code>text_kgc_data/cli.py</code>. Example usage:</p>
 <div class="copy highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>text_kgc_data.cli<span class="w"> </span><span class="o">[</span>COMMAND<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
