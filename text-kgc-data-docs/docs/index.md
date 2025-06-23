@@ -2,12 +2,11 @@
 
 This package provides tools for downloading, processing, standardizing, and loading knowledge graph data with textual descriptions. It includes a command-line interface (CLI) for all major data preparation and preprocessing steps.
 
-git submodule add https://github.com/other-user/other-repo.git packages
-
 ---
 
 ## Add to Your Project
-git clone
+git submodule add https://github.com/TJ-coding/TextKGCData.git packages
+
 ## Installation
 pip install text-kgc-data
 
