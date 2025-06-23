@@ -428,6 +428,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#saving-kg-to-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saving KG to Files
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">
       Notes
@@ -624,6 +633,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#saving-kg-to-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saving KG to Files
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">
       Notes
@@ -765,7 +783,7 @@
 <hr/>
 <h2 id="loading-textual-kg-files-in-python">Loading Textual KG Files in Python<a class="headerlink" href="#loading-textual-kg-files-in-python" title="Permanent link">¶</a></h2>
 <p>You can load processed textual knowledge graph files using the <code>SimKGCDataLoader</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">deer_dataset_manager.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tkg_from_files</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">text_kgc_data.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tkg_from_files</span>
 
 <span class="n">entity_id2name_source_path</span> <span class="o">=</span> <span class="s2">"path/to/entity_id2name.json"</span>  <span class="c1"># Dict[str, str]</span>
 <span class="n">entity_id2description_source_path</span> <span class="o">=</span> <span class="s2">"path/to/entity_id2description.json"</span> <span class="c1"># Dict[str, str]</span>
@@ -777,6 +795,23 @@
     <span class="n">relation_id2name_source_path</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
+<h2 id="saving-kg-to-files">Saving KG to Files<a class="headerlink" href="#saving-kg-to-files" title="Permanent link">¶</a></h2>
+<p>You can save a <code>TextualKG</code> object to disk using the <code>save_tkg_to_files</code> function. This will export the entity and relation mappings to JSON files for later use.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">text_kgc_data.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_tkg_to_files</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">text_kgc_data.tkg</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextualKG</span>
+
+<span class="c1"># Assume `textual_kg` is an instance of TextualKG</span>
+<span class="n">save_tkg_to_files</span><span class="p">(</span>
+  <span class="n">textual_kg</span><span class="p">,</span>
+  <span class="s2">"path/to/entity_id2name.json"</span><span class="p">,</span>
+  <span class="s2">"path/to/entity_id2description.json"</span><span class="p">,</span>
+  <span class="s2">"path/to/relation_id2name.json"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>Make sure the output paths are writable.</li>
+<li>The saved files can be loaded later using <code>load_tkg_from_files</code>.</li>
+</ul>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">¶</a></h2>
 <ul>
 <li>All CLI commands support custom input/output paths for flexible workflows.</li>
