@@ -24,14 +24,14 @@ Convert the raw WN18RR entity definitions into standardized files for entity IDs
 tkg standardize-wn18rr-entity-files-cli \
   --definitions-source-path WN18RR/wordnet-mlj12-definitions.txt \
   --entity-id-save-path wn18rr_tkg/entity_ids.txt \
-  --entity-id2name-save-path wn18rr_tkg/entity_id2name.txt \
-  --entity-id2description-save-path wn18rr_tkg/entity_id2description.txt
+  --entity-id2name-save-path wn18rr_tkg/entity_id2name.json \
+  --entity-id2description-save-path wn18rr_tkg/entity_id2description.json
 ```
 
 This will generate:
 - `wn18rr_tkg/entity_ids.txt`
-- `wn18rr_tkg/entity_id2name.txt`
-- `wn18rr_tkg/entity_id2description.txt`
+- `wn18rr_tkg/entity_id2name.json`
+- `wn18rr_tkg/entity_id2description.json`
 
 ---
 
@@ -56,8 +56,8 @@ If you want to ensure that every entity has both a name and a description, fill 
 
 ```shell {.copy}
 tkg fill-missing-entries-cli \
-  --entity-id2name-source-path wn18rr_tkg/entity_id2name.txt \
-  --entity-id2description-source-path wn18rr_tkg/entity_id2description.txt \
+  --entity-id2name-source-path wn18rr_tkg/entity_id2name.json \
+  --entity-id2description-source-path wn18rr_tkg/entity_id2description.json \
   --entity-id2name-save-path wn18rr_tkg/filled_entity_id2name.json \
   --entity-id2description-save-path wn18rr_tkg/filled_entity_id2description.json \
   --place-holder-character "-"

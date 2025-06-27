@@ -21,8 +21,8 @@ def create_word_ids_and_words_and_definitions(
 def standardize_wn18rr_entity_files(
     definitions_source_path: str = "WN18RR/wordnet-mlj12-definitions.txt",
     entity_id_save_path: str = "wn18rr_tkg/entity_ids.txt",
-    entity_id2name_save_path: str = "wn18rr_tkg/entity_id2_name.txt",
-    entity_id2description_save_path: str = "wn18rr_tkg/entity_id2_description.txt",
+    entity_id2name_save_path: str = "wn18rr_tkg/entity_id2_name.json",
+    entity_id2description_save_path: str = "wn18rr_tkg/entity_id2_description.json",
 ):
     """Ceate a mapping of entity ids to their descriptions"""
 
