@@ -613,13 +613,13 @@
 <span class="w">  </span>--entity-names-source-path<span class="w"> </span>wikidata5m/wikidata5m_entity.txt<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--entity-descriptions-source-path<span class="w"> </span>wikidata5m/wikidata5m_text.txt<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--entity-id-save-path<span class="w"> </span>wikidata5m_tkg/entity_ids.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2_name.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2_description.json
+<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2name.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2description.json
 </code></pre></div>
 <p>This will generate:
 - <code>wikidata5m_tkg/entity_ids.txt</code>
-- <code>wikidata5m_tkg/entity_id2_name.json</code>
-- <code>wikidata5m_tkg/entity_id2_description.json</code></p>
+- <code>wikidata5m_tkg/entity_id2name.json</code>
+- <code>wikidata5m_tkg/entity_id2description.json</code></p>
 <hr/>
 <h2 id="3-standardize-relation-file">3. Standardize Relation File<a class="headerlink" href="#3-standardize-relation-file" title="Permanent link">¶</a></h2>
 <p>Convert the raw Wikidata5M relations file into a standardized JSON mapping:</p>
@@ -633,19 +633,19 @@
 <h2 id="4-fill-missing-entity-namesdescriptions-optional">4. Fill Missing Entity Names/Descriptions (Optional)<a class="headerlink" href="#4-fill-missing-entity-namesdescriptions-optional" title="Permanent link">¶</a></h2>
 <p>If you want to ensure that every entity has both a name and a description, fill missing entries with a placeholder:</p>
 <div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>fill-missing-entries-cli<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-source-path<span class="w"> </span>wikidata5m_tkg/entity_id2_name.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-source-path<span class="w"> </span>wikidata5m_tkg/entity_id2_description.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2_name.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2_description.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2name-source-path<span class="w"> </span>wikidata5m_tkg/entity_id2name.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-source-path<span class="w"> </span>wikidata5m_tkg/entity_id2description.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2name.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2description.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--place-holder-character<span class="w"> </span><span class="s2">"-"</span>
 </code></pre></div>
 <hr/>
 <h2 id="5-truncate-descriptions-optional-for-model-compatibility">5. Truncate Descriptions (Optional, for model compatibility)<a class="headerlink" href="#5-truncate-descriptions-optional-for-model-compatibility" title="Permanent link">¶</a></h2>
 <p>To ensure descriptions fit within a model's token limit (e.g., 50 tokens for SimKGC), run:</p>
 <div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>truncate-description-cli<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--tokenizer-name<span class="w"> </span>bert-base-uncased<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2_description.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output-entity-id2description-path<span class="w"> </span>wikidata5m_tkg/truncated_entity_id2_description.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gpt2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-source-path<span class="w"> </span>wikidata5m_tkg/filled_entity_id2description.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/truncated_entity_id2description.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--truncate-tokens<span class="w"> </span><span class="m">50</span>
 </code></pre></div>
 <hr/>
@@ -653,8 +653,8 @@
 <p>You can now load the processed Wikidata5M files using the <code>load_tkg_from_files</code> utility:</p>
 <div class="copy highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">deer_dataset_manager.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tkg_from_files</span>
 
-<span class="n">entity_id2name_source_path</span> <span class="o">=</span> <span class="s2">"wikidata5m_tkg/filled_entity_id2_name.json"</span>  <span class="c1"># Dict[str, str]</span>
-<span class="n">entity_id2description_source_path</span> <span class="o">=</span> <span class="s2">"wikidata5m_tkg/truncated_entity_id2_description.json"</span> <span class="c1"># Dict[str, str]</span>
+<span class="n">entity_id2name_source_path</span> <span class="o">=</span> <span class="s2">"wikidata5m_tkg/filled_entity_id2name.json"</span>  <span class="c1"># Dict[str, str]</span>
+<span class="n">entity_id2description_source_path</span> <span class="o">=</span> <span class="s2">"wikidata5m_tkg/truncated_entity_id2description.json"</span> <span class="c1"># Dict[str, str]</span>
 <span class="n">relation_id2name_source_path</span> <span class="o">=</span> <span class="s2">"wikidata5m_tkg/relation_id2name.json"</span> <span class="c1"># Dict[str, str]</span>
 
 <span class="n">textual_wikidata5m_kg</span> <span class="o">=</span> <span class="n">load_tkg_from_files</span><span class="p">(</span>

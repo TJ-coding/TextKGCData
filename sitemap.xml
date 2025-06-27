@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://tj-coding.github.io/TextKGCData/./</loc>
-         <lastmod>2025-06-23</lastmod>
+         <lastmod>2025-06-27</lastmod>
     </url>
     <url>
          <loc>https://tj-coding.github.io/TextKGCData/standardised_tkg/</loc>
-         <lastmod>2025-06-23</lastmod>
+         <lastmod>2025-06-27</lastmod>
     </url>
     <url>
          <loc>https://tj-coding.github.io/TextKGCData/wikidata5m_example/</loc>
-         <lastmod>2025-06-23</lastmod>
+         <lastmod>2025-06-27</lastmod>
     </url>
     <url>
          <loc>https://tj-coding.github.io/TextKGCData/wn18rr_example/</loc>
-         <lastmod>2025-06-23</lastmod>
+         <lastmod>2025-06-27</lastmod>
     </url>
     <url>
          <loc>https://tj-coding.github.io/TextKGCData/blog/</loc>
-         <lastmod>2025-06-23</lastmod>
+         <lastmod>2025-06-27</lastmod>
     </url>
 </urlset>
