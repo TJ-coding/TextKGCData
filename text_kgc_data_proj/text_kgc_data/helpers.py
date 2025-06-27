@@ -12,8 +12,8 @@ def text_to_tsvs(tsv_text: str) -> List[Tuple[str, ...]]:
     return tsvs
 
 @beartype
-def tsv_tuples_to_text(tsvs: List[Tuple[str, str]]) -> str:
-    '''Converts a list of tsv tuples into a text representation.'''
+def tsvs_to_text(tsvs: List[Tuple[str, ...]]) -> str:
+    '''Converts a list of tsvs into a text representation.'''
     text = ""
     for tsv in tqdm(tsvs, total=len(tsvs)):
         text += "\t".join(tsv) + "\n"

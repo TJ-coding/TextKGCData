@@ -10,10 +10,10 @@ def tsvs_to_dict(tsvs: List[List[str]], file_name: Optional[str]=None)->Dict[str
     E.g. "Q42\tObama\tBarak Obama\tBarack Hussein Obama\tBarack Hussein Obama Sr.\tBarack Hussein Obama Jr.\tBarack Hussein Obama III"
     '''
     id2value: Dict[str, str] = {}
-    for tsv in tqdm(tsvs, desc= f'Loading {file_name}', total=len(tsvs) if file_name != None else None):
+    for i, tsv in enumerate(tqdm(tsvs, desc= f'Loading {file_name}', total=len(tsvs) if file_name != None else None)):
         if len(tsv) < 2:
             print(f"Error line in {file_name}: {tsv}")
-            raise ValueError(f"Expected at least 2 parts in line, got {len(tsv)}: {tsv}")
+            raise ValueError(f"{i}th tsv: Expected at least 2 parts in line, got {len(tsv)}: {tsv}")
         id2value[tsv[0]] = tsv[1]
     return id2value
 
@@ -35,12 +35,12 @@ def standardize_wikidata5m_entity_files(
     entity_names_tsvs: List[Tuple[str, ...]] = text_to_tsvs(entity_names_text)
     entity_id2name: Dict[str, str] =  tsvs_to_dict(entity_names_tsvs, file_name=entity_names_source_path)
     
-    with open(entity_descriptions_source_path, "w") as handle:
+    with open(entity_descriptions_source_path, "r") as handle:
         entity_descriptions_text: str = handle.read()   
     entity_descriptions_tsvs: List[Tuple[str, ...]] = text_to_tsvs(entity_descriptions_text)
     entity_id2description: Dict[str, str] = tsvs_to_dict(entity_descriptions_tsvs, file_name=entity_descriptions_source_path)
 
-    entity_ids: List[str] = list(set(entity_id2name.keys()).add(set(entity_id2description.keys())))
+    entity_ids: List[str] = list(set(entity_id2name.keys()).union(set(entity_id2description.keys())))
 
     with open(entity_id_save_path, "w") as handle:
         handle.write("\n".join(entity_ids))
@@ -62,8 +62,8 @@ def standardize_wikidata5m_relation_file(
     with open(relations_source_path, "r") as handle:
         relation_text = handle.read()
     
-    text_to_tsvs: List[Tuple, str] = text_to_tsvs(relation_text)
-    relation_id2name: Dict[str, str] = tsvs_to_dict(text_to_tsvs, file_name=relations_source_path)
+    telation_tsvs: List[Tuple, str] = text_to_tsvs(relation_text)
+    relation_id2name: Dict[str, str] = tsvs_to_dict(telation_tsvs, file_name=relations_source_path)
     
     with open(relation_id2name_save_path, "w") as handle:
         json.dump(relation_id2name, handle, indent=4)

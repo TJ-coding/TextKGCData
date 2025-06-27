@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple
 from beartype import beartype
 import json
 from text_kgc_data.helpers import text_to_tsvs
+from tqdm import tqdm
 
 """Preprocess WN18RR into loadable format """
 
@@ -11,7 +12,7 @@ def create_word_ids_and_words_and_definitions(
 ) -> Tuple[List[str], List[str], List[str]]:
     word_ids, words, definitions = zip(*definiton_triplets)
     words = [
-        " ".join(triplet[1].split("_")[:-2]).strip() for triplet in definiton_triplets
+        " ".join(triplet[1].split("_")[:-2]).strip() for triplet in tqdm(definiton_triplets, desc="Processing words", total=len(definiton_triplets))
     ]
     return list(word_ids), words, list(definitions)
 

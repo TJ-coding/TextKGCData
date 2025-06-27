@@ -27,8 +27,8 @@ def download_text_kgc_dataset(data_dir_name="text_based_kgc_data"):
 def standardize_wn18rr_entity_files_cli(
     definitions_source_path: str = "WN18RR/wordnet-mlj12-definitions.txt",
     entity_id_save_path: str = "wn18rr_tkg/entity_ids.txt",
-    entity_id2name_save_path: str = "wn18rr_tkg/entity_id2_name.txt",
-    entity_id2description_save_path: str = "wn18rr_tkg/entity_id2_description.txt",
+    entity_id2name_save_path: str = "wn18rr_tkg/entity_id2name.txt",
+    entity_id2description_save_path: str = "wn18rr_tkg/entity_id2description.txt",
 ):
     """Standardize WN18RR entity files."""
     standardize_wn18rr_entity_files(
@@ -56,8 +56,8 @@ def standardize_wikidata5m_entity_files_cli(
     entity_names_source_path: str = "wikidata5m/wikidata5m_entity.txt",
     entity_descriptions_source_path: str = "wikidata5m/wikidata5m_text.txt",
     entity_id_save_path: str = "wikidata5m_tkg/entity_ids.txt",
-    entity_id2name_save_path: str = "wikidata5m_tkg/entity_id2_name.json",
-    entity_id2description_save_path: str = "wikidata5m_tkg/entity_id2_description.json",
+    entity_id2name_save_path: str = "wikidata5m_tkg/entity_id2name.json",
+    entity_id2description_save_path: str = "wikidata5m_tkg/entity_id2description.json",
 ):
     """Standardize Wikidata5M entity files."""
     standardize_wikidata5m_entity_files(
@@ -83,17 +83,17 @@ def standardize_wikidata5m_relation_file_cli(
 @app.command()
 @beartype
 def fill_missing_entries_cli(
-    entity_id2name_source_path: str,
-    entity_id2description_source_ath: str,
-    entity_id2name_save_path: str,
-    entity_id2description_save_path: str,
+    entity_id2name_source_path: str = "wn18rr_tkg/entity_id2name.json",
+    entity_id2description_source_path: str = "wn18rr_tkg/entity_id2description.json",
+    entity_id2name_save_path: str = "wn18rr_tkg/filled_entity_id2name.json",
+    entity_id2description_save_path: str = "wn18rr_tkg/filled_entity_id2description.json",
     place_holder_character: str = '-',
 ):
     """Fill missing entries in entity_id2name and entity_id2description JSON files and save results."""
     import json
     with open(entity_id2name_source_path, 'r') as f:
         entity_id2name = json.load(f)
-    with open(entity_id2description_source_ath, 'r') as f:
+    with open(entity_id2description_source_path, 'r') as f:
         entity_id2description = json.load(f)
     entity_id2name, entity_id2description = fill_missing_entries(
         entity_id2name, entity_id2description, place_holder_character=place_holder_character
@@ -107,14 +107,14 @@ def fill_missing_entries_cli(
 @beartype
 def truncate_description_cli(
     tokenizer_name: str,
-    entity_id2description_path: str= "wn18rr_tkg/entity_id2_description.json",
-    output_entity_id2description_path: str= "wn18rr_tkg/truncated_entity_id2_description.json",
+    entity_id2description_source_path: str= "wn18rr_tkg/entity_id2description.json",
+    entity_id2description_save_path: str= "wn18rr_tkg/truncated_entity_id2description.json",
     truncate_tokens: int = 50,
     batch_size: int = 50000,
 ):
     """Truncate entity descriptions in a JSON file and save the result. Note: The SimKGC paper sets truncation to 50 tokens."""
     import json
-    with open(entity_id2description_path, 'r') as f:
+    with open(entity_id2description_source_path, 'r') as f:
         entity_id2description = json.load(f)
     entity_id2description = truncate_description(
         entity_id2description,
@@ -122,7 +122,7 @@ def truncate_description_cli(
         truncate_tokens=truncate_tokens,
         batch_size=batch_size,
     )
-    with open(output_entity_id2description_path, 'w') as f:
+    with open(entity_id2description_save_path, 'w') as f:
         json.dump(entity_id2description, f, indent=4)
 
 def none():

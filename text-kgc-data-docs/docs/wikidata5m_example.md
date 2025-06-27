@@ -25,14 +25,14 @@ tkg standardize-wikidata5m-entity-files-cli \
   --entity-names-source-path wikidata5m/wikidata5m_entity.txt \
   --entity-descriptions-source-path wikidata5m/wikidata5m_text.txt \
   --entity-id-save-path wikidata5m_tkg/entity_ids.txt \
-  --entity-id2name-save-path wikidata5m_tkg/entity_id2_name.json \
-  --entity-id2description-save-path wikidata5m_tkg/entity_id2_description.json
+  --entity-id2name-save-path wikidata5m_tkg/entity_id2name.json \
+  --entity-id2description-save-path wikidata5m_tkg/entity_id2description.json
 ```
 
 This will generate:
 - `wikidata5m_tkg/entity_ids.txt`
-- `wikidata5m_tkg/entity_id2_name.json`
-- `wikidata5m_tkg/entity_id2_description.json`
+- `wikidata5m_tkg/entity_id2name.json`
+- `wikidata5m_tkg/entity_id2description.json`
 
 ---
 
@@ -57,10 +57,10 @@ If you want to ensure that every entity has both a name and a description, fill 
 
 ```shell {.copy}
 tkg fill-missing-entries-cli \
-  --entity-id2name-source-path wikidata5m_tkg/entity_id2_name.json \
-  --entity-id2description-source-path wikidata5m_tkg/entity_id2_description.json \
-  --entity-id2name-save-path wikidata5m_tkg/filled_entity_id2_name.json \
-  --entity-id2description-save-path wikidata5m_tkg/filled_entity_id2_description.json \
+  --entity-id2name-source-path wikidata5m_tkg/entity_id2name.json \
+  --entity-id2description-source-path wikidata5m_tkg/entity_id2description.json \
+  --entity-id2name-save-path wikidata5m_tkg/filled_entity_id2name.json \
+  --entity-id2description-save-path wikidata5m_tkg/filled_entity_id2description.json \
   --place-holder-character "-"
 ```
 
@@ -72,9 +72,9 @@ To ensure descriptions fit within a model's token limit (e.g., 50 tokens for Sim
 
 ```shell {.copy}
 tkg truncate-description-cli \
-  --tokenizer-name bert-base-uncased \
-  --entity-id2description-path wikidata5m_tkg/filled_entity_id2_description.json \
-  --output-entity-id2description-path wikidata5m_tkg/truncated_entity_id2_description.json \
+  gpt2 \
+  --entity-id2description-source-path wikidata5m_tkg/filled_entity_id2description.json \
+  --entity-id2description-save-path wikidata5m_tkg/truncated_entity_id2description.json \
   --truncate-tokens 50
 ```
 
@@ -87,8 +87,8 @@ You can now load the processed Wikidata5M files using the `load_tkg_from_files` 
 ```python {.copy}
 from deer_dataset_manager.tkg_io import load_tkg_from_files
 
-entity_id2name_source_path = "wikidata5m_tkg/filled_entity_id2_name.json"  # Dict[str, str]
-entity_id2description_source_path = "wikidata5m_tkg/truncated_entity_id2_description.json" # Dict[str, str]
+entity_id2name_source_path = "wikidata5m_tkg/filled_entity_id2name.json"  # Dict[str, str]
+entity_id2description_source_path = "wikidata5m_tkg/truncated_entity_id2description.json" # Dict[str, str]
 relation_id2name_source_path = "wikidata5m_tkg/relation_id2name.json" # Dict[str, str]
 
 textual_wikidata5m_kg = load_tkg_from_files(

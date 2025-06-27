@@ -24,14 +24,14 @@ Convert the raw WN18RR entity definitions into standardized files for entity IDs
 tkg standardize-wn18rr-entity-files-cli \
   --definitions-source-path WN18RR/wordnet-mlj12-definitions.txt \
   --entity-id-save-path wn18rr_tkg/entity_ids.txt \
-  --entity-id2name-save-path wn18rr_tkg/entity_id2_name.txt \
-  --entity-id2description-save-path wn18rr_tkg/entity_id2_description.txt
+  --entity-id2name-save-path wn18rr_tkg/entity_id2name.txt \
+  --entity-id2description-save-path wn18rr_tkg/entity_id2description.txt
 ```
 
 This will generate:
 - `wn18rr_tkg/entity_ids.txt`
-- `wn18rr_tkg/entity_id2_name.txt`
-- `wn18rr_tkg/entity_id2_description.txt`
+- `wn18rr_tkg/entity_id2name.txt`
+- `wn18rr_tkg/entity_id2description.txt`
 
 ---
 
@@ -42,7 +42,7 @@ Convert the raw WN18RR relations file into a standardized JSON mapping:
 ```shell {.copy}
 tkg standardize-wn18rr-relation-file-cli \
   --relations-source-path WN18RR/relations.dict \
-  --relation-id2name-save-path wn18rr_tkg/wn18rr-relations2description.json
+  --relation-id2name-save-path wn18rr_tkg/relation_id2name.json
 ```
 
 This will generate:
@@ -56,10 +56,10 @@ If you want to ensure that every entity has both a name and a description, fill 
 
 ```shell {.copy}
 tkg fill-missing-entries-cli \
-  --entity-id2name-source-path wn18rr_tkg/entity_id2_name.txt \
-  --entity-id2description-source-path wn18rr_tkg/entity_id2_description.txt \
-  --entity-id2name-save-path wn18rr_tkg/filled_entity_id2_name.json \
-  --entity-id2description-save-path wn18rr_tkg/filled_entity_id2_description.json \
+  --entity-id2name-source-path wn18rr_tkg/entity_id2name.txt \
+  --entity-id2description-source-path wn18rr_tkg/entity_id2description.txt \
+  --entity-id2name-save-path wn18rr_tkg/filled_entity_id2name.json \
+  --entity-id2description-save-path wn18rr_tkg/filled_entity_id2description.json \
   --place-holder-character "-"
 ```
 
@@ -71,9 +71,9 @@ To ensure descriptions fit within a model's token limit (e.g., 50 tokens for Sim
 
 ```shell {.copy}
 tkg truncate-description-cli \
-  --tokenizer-name bert-base-uncased \
-  --entity-id2description-path wn18rr_tkg/filled_entity_id2_description.json \
-  --output-entity-id2description-path wn18rr_tkg/truncated_entity_id2_description.json \
+  gpt2 \
+  --entity-id2description-source-path wn18rr_tkg/filled_entity_id2description.json \
+  --entity-id2description-save-path wn18rr_tkg/truncated_entity_id2description.json \
   --truncate-tokens 50
 ```
 
@@ -86,9 +86,9 @@ You can now load the processed WN18RR files using the `SimKGCDataLoader`:
 ```python {.copy}
 from deer_dataset_manager.tkg_io import load_tkg_from_files
 
-entity_id2name_source_path = "path/to/filled_entity_id2_name.json"  # Dict[str, str]
-entity_id2description_source_path = "wn18rr_tkg/truncated_entity_id2_description.json" # Dict[str, str]
-relation_id2name_source_path = "path/to/relation_id2name.json" # Dict[str, str]
+entity_id2name_source_path = "wn18rr_tkg/filled_entity_id2name.json"  # Dict[str, str]
+entity_id2description_source_path = "wn18rr_tkg/truncated_entity_id2description.json" # Dict[str, str]
+relation_id2name_source_path = "wn18rr_tkg/relation_id2name.json" # Dict[str, str]
 
 textual_wn18rr_kg = load_tkg_from_files(
     entity_id2name_source_path,
