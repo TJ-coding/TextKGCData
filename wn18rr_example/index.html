@@ -614,13 +614,13 @@
 <div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>standardize-wn18rr-entity-files-cli<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--definitions-source-path<span class="w"> </span>WN18RR/wordnet-mlj12-definitions.txt<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--entity-id-save-path<span class="w"> </span>wn18rr_tkg/entity_ids.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wn18rr_tkg/entity_id2name.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wn18rr_tkg/entity_id2description.txt
+<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wn18rr_tkg/entity_id2name.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wn18rr_tkg/entity_id2description.json
 </code></pre></div>
 <p>This will generate:
 - <code>wn18rr_tkg/entity_ids.txt</code>
-- <code>wn18rr_tkg/entity_id2name.txt</code>
-- <code>wn18rr_tkg/entity_id2description.txt</code></p>
+- <code>wn18rr_tkg/entity_id2name.json</code>
+- <code>wn18rr_tkg/entity_id2description.json</code></p>
 <hr/>
 <h2 id="3-standardize-relation-file">3. Standardize Relation File<a class="headerlink" href="#3-standardize-relation-file" title="Permanent link">¶</a></h2>
 <p>Convert the raw WN18RR relations file into a standardized JSON mapping:</p>
@@ -634,8 +634,8 @@
 <h2 id="4-fill-missing-entity-namesdescriptions-optional">4. Fill Missing Entity Names/Descriptions (Optional)<a class="headerlink" href="#4-fill-missing-entity-namesdescriptions-optional" title="Permanent link">¶</a></h2>
 <p>If you want to ensure that every entity has both a name and a description, fill missing entries with a placeholder:</p>
 <div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>fill-missing-entries-cli<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-source-path<span class="w"> </span>wn18rr_tkg/entity_id2name.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-source-path<span class="w"> </span>wn18rr_tkg/entity_id2description.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2name-source-path<span class="w"> </span>wn18rr_tkg/entity_id2name.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--entity-id2description-source-path<span class="w"> </span>wn18rr_tkg/entity_id2description.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wn18rr_tkg/filled_entity_id2name.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wn18rr_tkg/filled_entity_id2description.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--place-holder-character<span class="w"> </span><span class="s2">"-"</span>
