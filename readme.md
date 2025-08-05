@@ -1,53 +1,145 @@
-# TextKGCData: Textual Knowledge Graph Data Toolkit
+# TextKGCData: Functional Text Knowledge Graph Toolkit
 
-TextKGCData is a Python toolkit for downloading, processing, standardizing, and loading knowledge graph data with rich textual descriptions. It provides a powerful CLI and Python API for preparing datasets like WN18RR and Wikidata5M for use in text-based knowledge graph completion and related tasks. The full documentation is available at [text-kgc-data-docs](https://tj-coding.github.io/TextKGCData/).
-
-
----
+A simple, functional toolkit for downloading, processing, and working with knowledge graph datasets for text-based knowledge graph completion. Follows Unix philosophy with composable functions that do one thing well.
 
 ## Features
-- **Download**: Fetches datasets from the SimKGC repository.
-- **Standardize**: Converts raw entity and relation files into clean, model-ready formats.
-- **Preprocess**: Fills missing entries, truncates descriptions, and ensures data consistency.
-- **Load**: Easily load processed data into your Python projects.
 
----
-## Add to Your Git Project
-`git submodule add https://github.com/TJ-coding/TextKGCData.git packages/text-kgc-data`
+- **Functional Design**: Pure functions with clear inputs/outputs  
+- **Unix Philosophy**: Small, composable tools that can be chained together
+- **Type Safety**: Full Beartype validation for runtime type checking
+- **Clear Naming**: Function names describe exactly what they create (`create_entity_id2name_wn18rr`)
+- **Dataset Support**: WN18RR and Wikidata5M datasets
+- **CLI + Programmatic**: Use via command line or import as Python library
 
 ## Installation
-`pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj`
 
-## Quickstart
-
-### 1. Download a dataset
-
-```shell
-tkg download-text-kgc-dataset --data-dir-name WN18RR
+```bash
+pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj
 ```
 
-### 2. Standardize and preprocess
+## Quick Start
 
-See the [WN18RR tutorial](text-kgc-data-docs/docs/wn18rr_example.md) and [Wikidata5M tutorial](text-kgc-data-docs/docs/wikidata5m_example.md) for full workflows.
+### CLI Usage
 
----
+```bash
+# Download WN18RR dataset
+text-kgc wn18rr download ./data
 
-## CLI Overview
+# Create entity mappings
+text-kgc wn18rr create-entity-mappings ./data/WN18RR/wordnet-mlj12-definitions.txt ./output
 
-All commands are available via the CLI:
+# Create relation mappings  
+text-kgc wn18rr create-relation-mappings ./data/WN18RR/relations.dict ./output
 
-```shell
-tkg [COMMAND] [OPTIONS]
+# Run complete pipeline
+text-kgc wn18rr process-pipeline ./data/WN18RR ./output --fill-missing --truncate-descriptions --tokenizer-name bert-base-uncased
+
+# Fill missing entries
+text-kgc fill-missing-entries ./output/entity_id2name.json ./output/entity_id2description.json ./filled
+
+# Truncate descriptions
+text-kgc truncate-descriptions ./output/entity_id2description.json bert-base-uncased ./truncated
 ```
 
-Key commands:
-- `download-text-kgc-dataset` — Download datasets
-- `standardize-wn18rr-entity-files-cli` — Standardize WN18RR entity files
-- `standardize-wn18rr-relation-file-cli` — Standardize WN18RR relation file
-- `standardize-wikidata5m-entity-files-cli` — Standardize Wikidata5M entity files
-- `standardize-wikidata5m-relation-file-cli` — Standardize Wikidata5M relation file
-- `fill-missing-entries-cli` — Fill missing names/descriptions
-- `truncate-description-cli` — Truncate descriptions for model compatibility
+### Programmatic Usage
+
+```python
+from pathlib import Path
+from text_kgc_data.datasets.wn18rr import (
+    download_wn18rr,
+    create_entity_id2name_wn18rr,
+    create_entity_id2description_wn18rr,
+    create_relation_id2name_wn18rr
+)
+from text_kgc_data.processors import fill_missing_entity_entries
+from text_kgc_data.io import save_json
+
+# Download data
+data_path = download_wn18rr(Path("./data"))
+
+# Create mappings
+definitions_file = data_path / "wordnet-mlj12-definitions.txt"
+entity_names = create_entity_id2name_wn18rr(definitions_file)
+entity_descriptions = create_entity_id2description_wn18rr(definitions_file)
+
+# Process data
+filled_names, filled_descriptions = fill_missing_entity_entries(
+    entity_names, entity_descriptions
+)
+
+# Save results
+save_json(filled_names, Path("./output/entity_id2name.json"))
+save_json(filled_descriptions, Path("./output/entity_id2description.json"))
+```
+
+## Project Structure
+
+```
+text_kgc_data/
+├── datasets/
+│   ├── wn18rr.py        # WN18RR-specific functions
+│   └── wikidata5m.py    # Wikidata5M-specific functions
+├── processors.py        # General processing functions
+├── io.py               # File I/O utilities
+├── cli.py              # Command-line interface
+└── __init__.py         # Public API
+```
+
+## Function Naming Convention
+
+Functions are named after **exactly what they create**:
+- `create_entity_id2name_wn18rr()` → creates entity_id2name mapping
+- `create_relation_id2name_wikidata5m()` → creates relation_id2name mapping  
+- `fill_missing_entity_entries()` → fills missing entries in entity mappings
+- `truncate_entity_descriptions()` → truncates descriptions to token limit
+
+## Available Commands
+
+### WN18RR Dataset
+- `text-kgc wn18rr download` - Download WN18RR data
+- `text-kgc wn18rr create-entity-mappings` - Create entity ID↔name/description mappings
+- `text-kgc wn18rr create-relation-mappings` - Create relation ID↔name mappings
+- `text-kgc wn18rr process-pipeline` - Run complete processing pipeline
+
+### Wikidata5M Dataset  
+- `text-kgc wikidata5m download` - Download Wikidata5M data
+- `text-kgc wikidata5m create-entity-mappings` - Create entity mappings
+- `text-kgc wikidata5m create-relation-mappings` - Create relation mappings
+
+### Processing
+- `text-kgc fill-missing-entries` - Fill missing entries in mappings
+- `text-kgc truncate-descriptions` - Truncate descriptions to token limits
+
+## Key Design Principles
+
+1. **Pure Functions**: Each function has clear inputs/outputs, no side effects
+2. **Composable**: Functions can be chained together for complex workflows  
+3. **Self-Documenting**: Function names describe exactly what they do
+4. **Type Safe**: Beartype ensures type correctness at runtime
+5. **Unix Philosophy**: Do one thing well, compose multiple tools
+
+## Migration from v0.1.0
+
+The old CLI commands map to new ones as follows:
+
+```bash
+# Old → New
+tkg download-text-kgc-dataset → text-kgc wn18rr download (or wikidata5m)
+tkg standardize-wn18rr-entity-files-cli → text-kgc wn18rr create-entity-mappings
+tkg standardize-wn18rr-relation-file-cli → text-kgc wn18rr create-relation-mappings
+tkg fill-missing-entries-cli → text-kgc fill-missing-entries
+tkg truncate-description-cli → text-kgc truncate-descriptions
+```
+
+## Contributing
+
+This project follows functional programming principles. When adding new features:
+
+1. Create pure functions with clear inputs/outputs
+2. Name functions after what they create/do
+3. Add Beartype decorators for type safety
+4. Include comprehensive docstrings
+5. Add both CLI commands and programmatic access
 
 Run `tkg --help` for all options.
 
