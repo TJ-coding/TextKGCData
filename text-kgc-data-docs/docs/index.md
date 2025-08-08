@@ -1,176 +1,139 @@
 # TextKGCData: Textual Knowledge Graph Data Toolkit
 
-This package provides tools for downloading, processing, standardizing, and loading knowledge graph data with textual descriptions. It includes a command-line interface (CLI) for all major data preparation and preprocessing steps.
+This package provides tools for downloading, processing, and standardizing knowledge graph data with textual descriptions. It includes SimKGC-compatible preprocessing for WN18RR, FB15k-237, and Wikidata5M datasets.
 
 ---
 
-## Add to Your Git Project
-``` shell {.copy}
+## Getting Started
+### :simple-github: Add to Your Git Project
+
+```shell {.copy}
 git submodule add https://github.com/TJ-coding/TextKGCData.git packages/text-kgc-data
 ```
 
-## Installation
-``` shell {.copy}
+### :simple-python: Installation
+
+```shell {.copy}
 pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj
 ```
 
+## :octicons-command-palette-16: Command Line Usage
 
-## CLI Commands
+### Download
 
-All commands are available via the CLI defined in `text_kgc_data/cli.py`. Example usage:
+All operations are available via the CLI:
 
 ```shell {.copy}
-python -m text_kgc_data.cli [COMMAND] [OPTIONS]
+text-kgc [DATASET] [COMMAND] [OPTIONS]
 ```
 
-### Download Data
+### Batch Operations (Recommended)
 
-- **download_text_kgc_dataset**
-  
-  Download the text-based KGC dataset from the SimKGC repository.
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli download-text-kgc-dataset --data-dir-name <output_dir>
-  ```
+**Download and Process All Datasets:**
+```shell {.copy}
+# Complete pipeline - downloads and processes all datasets
+text-kgc download-and-process-all
 
-### Standardize WN18RR Data
-
-- **standardize_wn18rr_entity_files_cli**
-  
-  Standardize WN18RR entity files (IDs, names, descriptions).
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli standardize-wn18rr-entity-files-cli \
-    --definitions-source-path WN18RR/wordnet-mlj12-definitions.txt \
-    --entity-id-save-path wn18rr_tkg/entity_ids.txt \
-    --entity-id2name-save-path wn18rr_tkg/entity_id2_name.txt \
-    --entity-id2description-save-path wn18rr_tkg/entity_id2_description.txt
-  ```
-
-- **standardize_wn18rr_relation_file_cli**
-  
-  Standardize WN18RR relation file (relation IDs to descriptions).
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli standardize-wn18rr-relation-file-cli \
-    --relations-source-path WN18RR/relations.dict \
-    --relation-id2name-save-path wn18rr_tkg/wn18rr-relations2description.json
-  ```
-
-### Standardize Wikidata5M Data
-
-- **standardize_wikidata5m_entity_files_cli**
-  
-  Standardize Wikidata5M entity files (IDs, names, descriptions).
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli standardize-wikidata5m-entity-files-cli \
-    --entity-names-source-path wikidata5m/wikidata5m_entity.txt \
-    --entity-descriptions-source-path wikidata5m/wikidata5m_text.txt \
-    --entity-id-save-path wikidata5m_tkg/entity_ids.txt \
-    --entity-id2name-save-path wikidata5m_tkg/entity_id2_name.json \
-    --entity-id2description-save-path wikidata5m_tkg/entity_id2_description.json
-  ```
-
-- **standardize_wikidata5m_relation_file_cli**
-  
-  Standardize Wikidata5M relation file (relation IDs to names).
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli standardize-wikidata5m-relation-file-cli \
-    --relations-source-path wikidata5m/wikidata5m_relation.txt \
-    --relation-id2name-save-path wikidata5m_tkg/relation_id2name.json
-  ```
-
-### Preprocessing Utilities
-
-- **fill_missing_entries_cli**
-  
-  Fill missing entries in entity name/description JSON files with a placeholder.
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli fill-missing-entries-cli \
-    --entity-id2name-path <input_name_json> \
-    --entity-id2description-path <input_desc_json> \
-    --output-entity-id2name-path <output_name_json> \
-    --output-entity-id2description-path <output_desc_json> \
-    --place-holder-character "-"
-  ```
-
-- **truncate_description_cli**
-  
-  Truncate entity descriptions to a maximum number of tokens using a HuggingFace tokenizer.
-  
-  ```shell {.copy}
-  python -m text_kgc_data.cli truncate-description-cli \
-    --entity-id2description-path <input_desc_json> \
-    --output-entity-id2description-path <output_desc_json> \
-    --tokenizer-name <hf_tokenizer_name> \
-    --truncate-tokens 50 \
-    --batch-size 50000
-  ```
-
----
-
-## Project Layout
-
-``` tree
-text_kgc_data/
-    cli.py              # Command line interface for all data operations
-    download_data.py    # Downloading data from SimKGC Repo
-    helpers.py          # Helper functions for TSV/JSON handling
-    preprocessors.py    # Data cleaning: fill missing, truncate descriptions
-    standardise_tkg_files/            
-       standardise_wn18rr.py      # Standardize WN18RR dataset
-       standardise_wikidata5m.py  # Standardize Wikidata5M dataset
-text-kgc-data-docs/
-    mkdocs.yml    # MkDocs configuration
-    docs/
-        index.md  # Documentation homepage
-        ...       # Other markdown pages, images, files
+# Or run separately:
+text-kgc download-all      # Downloads all datasets
+text-kgc process-all       # Processes all datasets
 ```
 
----
+### Supported Datasets and Commands
 
-## Loading Textual KG Files in Python
+**WN18RR Dataset:**
+```shell {.copy}
+# Download WN18RR dataset
+text-kgc wn18rr download data/raw/wn18rr
 
-You can load processed textual knowledge graph files using the `SimKGCDataLoader`:
+# Process with SimKGC compatibility
+text-kgc wn18rr process data/raw/wn18rr data/standardised/wn18rr
+```
+
+**FB15k-237 Dataset:**
+```shell {.copy}
+# Download FB15k-237 dataset
+text-kgc fb15k237 download data/raw/fb15k237
+
+# Process with SimKGC compatibility
+text-kgc fb15k237 process data/raw/fb15k237 data/standardised/fb15k237
+```
+
+**Wikidata5M Dataset:**
+```shell {.copy}
+# Download transductive variant
+text-kgc wikidata5m download-transductive data/raw/wikidata5m-transductive
+
+# Download inductive variant  
+text-kgc wikidata5m download-inductive data/raw/wikidata5m-inductive
+
+# Process transductive variant
+text-kgc wikidata5m process-transductive data/raw/wikidata5m-transductive data/standardised/wikidata5m-transductive
+
+# Process inductive variant
+text-kgc wikidata5m process-inductive data/raw/wikidata5m-inductive data/standardised/wikidata5m-inductive
+```
+
+### Python API
+
+Load processed knowledge graph files:
 
 ```python
-from text_kgc_data.tkg_io import load_tkg_from_files
+from text_kgc_data.io import load_standardized_kg
 
-entity_id2name_source_path = "path/to/entity_id2name.json"  # Dict[str, str]
-entity_id2description_source_path = "path/to/entity_id2description.json" # Dict[str, str]
-relation_id2name_source_path = "path/to/relation_id2name.json" # Dict[str, str]
+# Load all standardized data at once
+kg_data = load_standardized_kg("data/standardised/wn18rr")
 
-textual_kg = load_tkg_from_files(
-    entity_id2name_source_path,
-    entity_id2description_source_path,
-    relation_id2name_source_path,
-)
+# Access the loaded data
+entity_id2name = kg_data['entities']      # Entity ID -> name mappings
+entity_id2description = kg_data['descriptions']  # Entity ID -> description mappings  
+relation_id2name = kg_data['relations']   # Relation ID -> name mappings
 ```
 
-## Saving KG to Files
-
-You can save a `TextualKG` object to disk using the `save_tkg_to_files` function. This will export the entity and relation mappings to JSON files for later use.
+Or load individual files:
 
 ```python
-from text_kgc_data.tkg_io import save_tkg_to_files
-from text_kgc_data.tkg import TextualKG
+from text_kgc_data.io import load_json
 
-# Assume `textual_kg` is an instance of TextualKG
-save_tkg_to_files(
-  textual_kg,
-  "path/to/entity_id2name.json",
-  "path/to/entity_id2description.json",
-  "path/to/relation_id2name.json",
-)
+# Load individual files manually
+entity_id2name = load_json("data/standardised/<dataset>/entity_id2name.json")
+entity_id2description = load_json("data/standardised/<dataset>/entity_id2description.json")
+relation_id2name = load_json("data/standardised/<dataset>/relation_id2name.json")
 ```
 
-- Make sure the output paths are writable.
-- The saved files can be loaded later using `load_tkg_from_files`.
+Use the truncation utilities directly:
 
-## Notes
-- All CLI commands support custom input/output paths for flexible workflows.
-- Preprocessing utilities help ensure data consistency and compatibility with downstream models.
-- See the code in `cli.py` for the latest available commands and options.
+```python
+from text_kgc_data.truncation import truncate_descriptions, get_truncation_limit
+
+# Dataset-aware truncation
+entity_descs = truncate_descriptions(
+    entity_descriptions,
+    dataset='wn18rr',
+    content_type='entity'
+)
+
+# Check truncation limits
+limit = get_truncation_limit('fb15k237', 'relation')  # Returns 10
+```
+
+### Key Features
+
+- **SimKGC Compatible**: Identical preprocessing to SimKGC paper implementation
+- **Dataset-Aware Truncation**: Automatic word limits per dataset (WN18RR: 50/30, FB15k-237: 50/10, Wikidata5M: 50/30)
+- **Word-Based Processing**: Uses word splitting instead of tokenization for consistency
+- **Multiple Variants**: Supports both transductive and inductive Wikidata5M evaluation settings
+
+## 📖 Dataset-Specific Guides
+
+For detailed processing instructions and academic paper preparation:
+
+- **[WN18RR Processing Guide](wn18rr_example.md)** - WordNet knowledge graph with 40k entities
+- **[FB15k-237 Processing Guide](fb15k237_example.md)** - Freebase subset with 14k entities  
+- **[Wikidata5M Processing Guide](wikidata5m_example.md)** - Large-scale Wikidata with 5M entities
+
+Each guide includes command references, step-by-step tutorials, and copy-pasteable methods sections for academic papers.
+
+## 🔧 For Developers
+
+- **[Adding New Datasets](adding_datasets.md)** - Complete guide for extending the toolkit with new knowledge graph datasets

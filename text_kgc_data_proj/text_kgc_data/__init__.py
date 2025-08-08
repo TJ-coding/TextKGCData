@@ -34,10 +34,20 @@ from text_kgc_data.processors import (
     validate_entity_mappings,
 )
 
+from text_kgc_data.truncation import (
+    truncate_descriptions,
+    truncate_text_by_words,
+    get_truncation_limit,
+    add_truncation_config,
+    get_available_datasets,
+    get_dataset_config,
+)
+
 from text_kgc_data.io import (
     load_json,
     save_json,
     save_entity_ids_list,
+    load_standardized_kg,
 )
 
 __version__ = "0.2.0"
@@ -59,8 +69,17 @@ __all__ = [
     "truncate_entity_descriptions",
     "validate_entity_mappings",
     
+    # Truncation functions (new)
+    "truncate_descriptions",
+    "truncate_text_by_words", 
+    "get_truncation_limit",
+    "add_truncation_config",
+    "get_available_datasets",
+    "get_dataset_config",
+    
     # I/O functions
     "load_json",
     "save_json",
     "save_entity_ids_list",
+    "load_standardized_kg",
 ]

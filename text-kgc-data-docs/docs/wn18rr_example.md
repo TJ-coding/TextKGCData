@@ -1,105 +1,147 @@
-# Tutorial: Processing WN18RR Data with TextKGCData CLI
+# WN18RR Processing Guide
 
-This tutorial walks you through the complete workflow for processing the WN18RR dataset using the TextKGCData CLI, from downloading the raw data to loading the processed files for use in your code.
+## Command Reference
+
+| Command | Purpose |
+|---------|---------|
+| `text-kgc wn18rr download` | Download raw WN18RR dataset |
+| `text-kgc wn18rr process` | Complete SimKGC-compatible processing |
+| `text-kgc wn18rr create-entity-text` | Create entity name/description mappings |
+| `text-kgc wn18rr create-relation-text` | Create relation name mappings |
+| `text-kgc wn18rr process-pipeline` | Complete pipeline with options |
+| `text-kgc wn18rr fill-missing-entries` | Fill missing entity entries |
+| `text-kgc wn18rr truncate-descriptions` | Truncate descriptions to word limit |
+
+### Batch Commands (All Datasets)
+
+| Command | Purpose |
+|---------|---------|
+| `text-kgc download-all` | Download all datasets (WN18RR + FB15k-237 + Wikidata5M) |
+| `text-kgc process-all` | Process all datasets with SimKGC compatibility |
+| `text-kgc download-and-process-all` | Complete pipeline for all datasets |
 
 ---
 
-## 1. Download the WN18RR Dataset
+## Quick Start
 
-First, download the text-based KGC dataset (including WN18RR) from the SimKGC repository:
-
+**Single Dataset (WN18RR only):**
 ```shell {.copy}
-tkg download-text-kgc-dataset --data-dir-name WN18RR
+text-kgc wn18rr download data/raw/wn18rr
+text-kgc wn18rr process data/raw/wn18rr data/standardised/wn18rr
 ```
 
-This will create a directory (default: `WN18RR/`) with the raw data files.
-
----
-
-## 2. Standardize Entity Files
-
-Convert the raw WN18RR entity definitions into standardized files for entity IDs, names, and descriptions:
-
+**All Datasets (Recommended):**
 ```shell {.copy}
-tkg standardize-wn18rr-entity-files-cli \
-  --definitions-source-path WN18RR/wordnet-mlj12-definitions.txt \
-  --entity-id-save-path wn18rr_tkg/entity_ids.txt \
-  --entity-id2name-save-path wn18rr_tkg/entity_id2name.json \
-  --entity-id2description-save-path wn18rr_tkg/entity_id2description.json
-```
-
-This will generate:
-- `wn18rr_tkg/entity_ids.txt`
-- `wn18rr_tkg/entity_id2name.json`
-- `wn18rr_tkg/entity_id2description.json`
-
----
-
-## 3. Standardize Relation File
-
-Convert the raw WN18RR relations file into a standardized JSON mapping:
-
-```shell {.copy}
-tkg standardize-wn18rr-relation-file-cli \
-  --relations-source-path WN18RR/relations.dict \
-  --relation-id2name-save-path wn18rr_tkg/relation_id2name.json
-```
-
-This will generate:
-- `wn18rr_tkg/wn18rr-relations2description.json`
-
----
-
-## 4. Fill Missing Entity Names/Descriptions (Optional)
-
-If you want to ensure that every entity has both a name and a description, fill missing entries with a placeholder:
-
-```shell {.copy}
-tkg fill-missing-entries-cli \
-  --entity-id2name-source-path wn18rr_tkg/entity_id2name.json \
-  --entity-id2description-source-path wn18rr_tkg/entity_id2description.json \
-  --entity-id2name-save-path wn18rr_tkg/filled_entity_id2name.json \
-  --entity-id2description-save-path wn18rr_tkg/filled_entity_id2description.json \
-  --place-holder-character "-"
+text-kgc download-and-process-all
 ```
 
 ---
 
-## 5. Truncate Descriptions (Optional, for model compatibility)
+## Step-by-Step Processing
 
-To ensure descriptions fit within a model's token limit (e.g., 50 tokens for SimKGC), run:
-
+**1. Download Dataset**
 ```shell {.copy}
-tkg truncate-description-cli \
-  gpt2 \
-  --entity-id2description-source-path wn18rr_tkg/filled_entity_id2description.json \
-  --entity-id2description-save-path wn18rr_tkg/truncated_entity_id2description.json \
-  --truncate-tokens 50
+text-kgc wn18rr download data/raw/wn18rr
+```
+
+**2. Create Entity Text**
+```shell {.copy}
+text-kgc wn18rr create-entity-text \
+  data/raw/wn18rr/wordnet-mlj12-definitions.txt \
+  data/standardised/wn18rr
+```
+
+**3. Create Relation Text**
+```shell {.copy}
+text-kgc wn18rr create-relation-text \
+  data/raw/wn18rr/relations.dict \
+  data/standardised/wn18rr
+```
+
+**4. Pipeline (Alternative)**
+```shell {.copy}
+text-kgc wn18rr process-pipeline \
+  data/raw/wn18rr \
+  data/standardised/wn18rr \
+  --fill-missing \
+  --truncate-descriptions \
+  --max-words 50
 ```
 
 ---
 
-## 6. Load the Processed Data in Python
-
-You can now load the processed WN18RR files using the `SimKGCDataLoader`:
+## Python Usage
 
 ```python {.copy}
-from deer_dataset_manager.tkg_io import load_tkg_from_files
+from text_kgc_data.io import load_standardized_kg
 
-entity_id2name_source_path = "wn18rr_tkg/filled_entity_id2name.json"  # Dict[str, str]
-entity_id2description_source_path = "wn18rr_tkg/truncated_entity_id2description.json" # Dict[str, str]
-relation_id2name_source_path = "wn18rr_tkg/relation_id2name.json" # Dict[str, str]
+# Load all WN18RR data at once
+wn18rr_data = load_standardized_kg("data/standardised/wn18rr")
 
-textual_wn18rr_kg = load_tkg_from_files(
-    entity_id2name_source_path,
-    entity_id2description_source_path,
-    relation_id2name_source_path,
-)
+# Access the data
+entities = wn18rr_data['entities']          # Entity ID -> name  
+descriptions = wn18rr_data['descriptions']  # Entity ID -> description
+relations = wn18rr_data['relations']        # Relation ID -> name
+```
+
+Or load individual files:
+
+```python {.copy}
+from text_kgc_data.io import load_json
+
+# Load individual files manually
+entity_id2name = load_json("data/standardised/wn18rr/entity_id2name.json")
+entity_id2description = load_json("data/standardised/wn18rr/entity_id2description.json")
+relation_id2name = load_json("data/standardised/wn18rr/relation_id2name.json")
 ```
 
 ---
 
-## Notes
-- All CLI commands support custom input/output paths for flexible workflows.
-- You can skip steps 4 and 5 if your data is already complete and within token limits.
-- For more details, see the main documentation or run `tkg --help`.
+## Preprocessing Details for Academic Papers
+
+### WN18RR Dataset Specification
+- **Source**: WordNet 18 - Reduced Relations
+- **Entities**: 40,943 unique synsets
+- **Relations**: 11 semantic relations  
+- **Splits**: 86,835 train / 3,034 validation / 3,134 test triplets
+
+### Text Processing Methodology
+
+**Entity Name Cleaning:**
+- Removes `__` prefix from WordNet synset identifiers
+- Strips POS tags and sense numbers (e.g., `_NN_1` suffix)
+- Example transformation: `__dog_NN_1` → `dog`
+
+**Text Truncation:**
+- Method: Word-based truncation (not subword tokenization)
+- Implementation: `text.split()[:max_words]` followed by `' '.join()`
+- Entity descriptions: 50 words maximum
+- Relation descriptions: 30 words maximum
+- Rationale: Ensures consistent text lengths across tokenizers
+
+**Missing Data Handling:**
+- Strategy: Empty string (`''`) for missing descriptions
+- No artificial placeholder tokens introduced
+- Maintains data structure consistency
+
+**Text Sources:**
+- Entity descriptions: `wordnet-mlj12-definitions.txt`
+- Entity names: Derived from synset identifiers after cleaning
+- Relation names: `relations.dict` with underscore-to-space conversion
+
+**Technical Specifications:**
+- Character encoding: UTF-8
+- Tokenizer compatibility: BERT-base-uncased (default)
+- Output format: Standardized JSON mappings + plain text entity lists
+- SimKGC compatibility: Full preprocessing pipeline alignment
+
+**Citation Notes:**
+This preprocessing follows SimKGC methodology (Wang et al., 2022). Word-based truncation ensures reproducibility across different tokenization schemes. For academic use, specify: "WN18RR entity descriptions truncated to 50 words, relation descriptions to 30 words using word-based splitting."
+
+---
+
+## Paper-Ready Summary
+
+**Copy-paste for Methods section:**
+
+*WN18RR Dataset Preprocessing:* We process the WN18RR dataset using SimKGC-compatible preprocessing following Wang et al. (2022). The dataset contains 40,943 entities and 11 relations with 86,835/3,034/3,134 train/validation/test triplets. Entity names are derived from WordNet synset identifiers by removing the `__` prefix and POS tag suffixes (e.g., `__dog_NN_1` → `dog`). Entity descriptions are sourced from the WordNet-MLJ12 definitions provided by Yao et al. (2019) (https://arxiv.org/abs/1909.03193) and truncated to 50 words using word-based splitting. Relation names are truncated to 30 words with underscores converted to spaces. Missing descriptions are represented as empty strings to maintain consistent data structure.

@@ -91,3 +91,58 @@ def ensure_directory_exists(directory_path: Path) -> None:
         directory_path: Path to the directory
     """
     directory_path.mkdir(parents=True, exist_ok=True)
+
+
+@beartype
+def load_standardized_kg(dataset_dir: str) -> Dict[str, Dict[str, str]]:
+    """Load standardized knowledge graph data from a dataset directory.
+    
+    This function loads the three standard files produced by the toolkit:
+    - entity_id2name.json: Entity ID to name mappings
+    - entity_id2description.json: Entity ID to description mappings  
+    - relation_id2name.json: Relation ID to name mappings
+    
+    Args:
+        dataset_dir: Path to directory containing standardized dataset files
+        
+    Returns:
+        Dictionary with keys 'entities', 'descriptions', 'relations' containing
+        the loaded mappings
+        
+    Raises:
+        FileNotFoundError: If any required files are missing
+        
+    Example:
+        >>> kg_data = load_standardized_kg("data/standardised/wn18rr")
+        >>> entities = kg_data['entities']  # entity_id -> name
+        >>> descriptions = kg_data['descriptions']  # entity_id -> description
+        >>> relations = kg_data['relations']  # relation_id -> name
+    """
+    dataset_path = Path(dataset_dir)
+    
+    # Define expected file paths
+    entity_names_file = dataset_path / "entity_id2name.json"
+    entity_descriptions_file = dataset_path / "entity_id2description.json"
+    relation_names_file = dataset_path / "relation_id2name.json"
+    
+    # Check that all files exist
+    missing_files = []
+    for file_path, file_desc in [
+        (entity_names_file, "entity_id2name.json"),
+        (entity_descriptions_file, "entity_id2description.json"), 
+        (relation_names_file, "relation_id2name.json")
+    ]:
+        if not file_path.exists():
+            missing_files.append(file_desc)
+    
+    if missing_files:
+        raise FileNotFoundError(
+            f"Missing required files in {dataset_path}: {', '.join(missing_files)}"
+        )
+    
+    # Load all files
+    return {
+        'entities': load_json(entity_names_file),
+        'descriptions': load_json(entity_descriptions_file),
+        'relations': load_json(relation_names_file)
+    }

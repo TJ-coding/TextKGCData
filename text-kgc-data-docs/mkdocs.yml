@@ -1,6 +1,6 @@
 site_name: text-kgc-data
 site_description: Library and command-line utility for rendering projects templates.
-site_url: https://tj-coding.github.io/TextKGCData/.
+# site_url: https://tj-coding.github.io/TextKGCData/  # Uncomment for production
 repo_url: https://github.com/TJ-coding/TextKGCData
 repo_name: TJ-coding/TextKGCData
 watch: [../text_kgc_data_proj]
@@ -8,10 +8,14 @@ nav:
   - Overview: "index.md"
   - Standardised File Format: "standardised_tkg.md"
   - WN18RR Example: "wn18rr_example.md"
-  - Wikidata5m Example: "wikidata5m_example.md"
+  - FB15k-237 Example: "fb15k237_example.md"
+  - Wikidata5M Example: "wikidata5m_example.md"
+  - Adding New Datasets: "adding_datasets.md"
   
 theme:
   name: material
+  icon:
+    logo: material/database-outline
   features:
     - content.code.annotate
     - navigation.top
@@ -37,11 +41,6 @@ theme:
       toggle:
         icon: material/weather-night
         name: Switch to system preference
-  icon:
-    tag:
-      labbook: octicons/beaker-24
-      strategic-plan: material/strategy
-    repo: fontawesome/brands/github
 
 
 extra:

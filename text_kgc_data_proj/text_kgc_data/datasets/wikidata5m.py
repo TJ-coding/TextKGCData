@@ -4,7 +4,7 @@ import os
 import subprocess
 import shutil
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from beartype import beartype
 from tqdm import tqdm
 
@@ -201,3 +201,211 @@ def create_entity_ids_wikidata5m(entity_id2name: Dict[str, str], entity_id2descr
     """
     all_entity_ids = set(entity_id2name.keys()) | set(entity_id2description.keys())
     return sorted(all_entity_ids)
+
+
+@beartype
+def download_wikidata5m_transductive(output_dir: str) -> None:
+    """Download Wikidata5M transductive variant.
+    
+    Args:
+        output_dir: Directory to save the downloaded files
+    """
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Base URL for Wikidata5M files
+    base_url = "https://www.dropbox.com/s"
+    
+    # Transductive split files
+    transductive_files = {
+        "wikidata5m_transductive_train.txt": "563omb2a0lnkrbl/wikidata5m_transductive_train.txt",
+        "wikidata5m_transductive_valid.txt": "5ff3seg5kczz60n/wikidata5m_transductive_valid.txt", 
+        "wikidata5m_transductive_test.txt": "hl42h6objbx71sy/wikidata5m_transductive_test.txt"
+    }
+    
+    # Common files
+    common_files = {
+        "wikidata5m_entity.txt": "563omb2a0lnkrbl/wikidata5m_entity.txt",
+        "wikidata5m_relation.txt": "jdl80cxy3tpk8xw/wikidata5m_relation.txt",
+        "wikidata5m_text.txt": "7jp4ib8zo3i6y2k/wikidata5m_text.txt"
+    }
+    
+    all_files = {**transductive_files, **common_files}
+    
+    print(f"Downloading Wikidata5M transductive dataset to {output_path}")
+    
+    for filename, url_path in all_files.items():
+        file_path = output_path / filename
+        if not file_path.exists():
+            url = f"{base_url}/{url_path}?dl=1"
+            print(f"Downloading {filename}...")
+            import urllib.request
+            urllib.request.urlretrieve(url, file_path)
+        else:
+            print(f"{filename} already exists, skipping")
+
+
+@beartype 
+def download_wikidata5m_inductive(output_dir: str) -> None:
+    """Download Wikidata5M inductive variant.
+    
+    Args:
+        output_dir: Directory to save the downloaded files
+    """
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Base URL for Wikidata5M files
+    base_url = "https://www.dropbox.com/s"
+    
+    # Inductive split files
+    inductive_files = {
+        "wikidata5m_inductive_train.txt": "563omb2a0lnkrbl/wikidata5m_inductive_train.txt",
+        "wikidata5m_inductive_valid.txt": "5ff3seg5kczz60n/wikidata5m_inductive_valid.txt",
+        "wikidata5m_inductive_test.txt": "hl42h6objbx71sy/wikidata5m_inductive_test.txt"
+    }
+    
+    # Common files
+    common_files = {
+        "wikidata5m_entity.txt": "563omb2a0lnkrbl/wikidata5m_entity.txt",
+        "wikidata5m_relation.txt": "jdl80cxy3tpk8xw/wikidata5m_relation.txt", 
+        "wikidata5m_text.txt": "7jp4ib8zo3i6y2k/wikidata5m_text.txt"
+    }
+    
+    all_files = {**inductive_files, **common_files}
+    
+    print(f"Downloading Wikidata5M inductive dataset to {output_path}")
+    
+    for filename, url_path in all_files.items():
+        file_path = output_path / filename
+        if not file_path.exists():
+            url = f"{base_url}/{url_path}?dl=1"
+            print(f"Downloading {filename}...")
+            import urllib.request
+            urllib.request.urlretrieve(url, file_path)
+        else:
+            print(f"{filename} already exists, skipping")
+
+
+@beartype
+def preprocess_wikidata5m_variant(
+    data_dir: str,
+    output_dir: str,
+    variant: str = "transductive",
+    entity_desc_max_words: int = 50,
+    relation_desc_max_words: int = 30
+) -> None:
+    """Preprocess Wikidata5M transductive or inductive variant.
+    
+    Args:
+        data_dir: Directory containing raw Wikidata5M files
+        output_dir: Directory to save processed files
+        variant: Either "transductive" or "inductive"
+        entity_desc_max_words: Maximum words for entity descriptions
+        relation_desc_max_words: Maximum words for relation descriptions
+    """
+    from ..processors import truncate_entity_descriptions
+    
+    if variant not in ["transductive", "inductive"]:
+        raise ValueError("variant must be 'transductive' or 'inductive'")
+    
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Load entity and relation mappings
+    print("Loading entity descriptions...")
+    entity_id2name = create_entity_id2name_wikidata5m(data_dir)
+    entity_id2description = create_entity_id2description_wikidata5m(data_dir) 
+    
+    print("Loading relation names...")
+    relation_id2name = create_relation_id2name_wikidata5m(data_dir)
+    
+    # Combine entity names and descriptions (prioritize descriptions)
+    entity_descriptions = {}
+    for entity_id in set(entity_id2name.keys()) | set(entity_id2description.keys()):
+        desc = entity_id2description.get(entity_id, '')
+        name = entity_id2name.get(entity_id, '')
+        # Use description if available, otherwise use name
+        entity_descriptions[entity_id] = desc if desc else name
+    
+    # Truncate descriptions
+    print("Truncating entity descriptions...")
+    entity_descriptions = truncate_entity_descriptions(
+        entity_descriptions,
+        max_words=entity_desc_max_words
+    )
+    
+    print("Truncating relation descriptions...")
+    relation_descriptions = truncate_entity_descriptions(
+        relation_id2name,
+        max_words=relation_desc_max_words
+    )
+    
+    # Process each split
+    split_files = {
+        "train": f"wikidata5m_{variant}_train.txt",
+        "valid": f"wikidata5m_{variant}_valid.txt", 
+        "test": f"wikidata5m_{variant}_test.txt"
+    }
+    
+    for split_name, filename in split_files.items():
+        input_file = os.path.join(data_dir, filename)
+        output_file = output_path / f"{split_name}_processed.txt"
+        
+        if not os.path.exists(input_file):
+            print(f"Warning: {input_file} not found, skipping {split_name} split")
+            continue
+            
+        print(f"Processing {split_name} split...")
+        
+        with open(input_file, 'r', encoding='utf-8') as infile, \
+             open(output_file, 'w', encoding='utf-8') as outfile:
+            
+            for line in infile:
+                parts = line.strip().split('\t')
+                if len(parts) >= 3:
+                    head, relation, tail = parts[:3]
+                    
+                    # Get descriptions
+                    head_desc = entity_descriptions.get(head, '')
+                    tail_desc = entity_descriptions.get(tail, '')
+                    rel_desc = relation_descriptions.get(relation, '')
+                    
+                    # Write processed triplet
+                    outfile.write(f"{head}\t{relation}\t{tail}\t{head_desc}\t{rel_desc}\t{tail_desc}\n")
+    
+    print(f"Wikidata5M {variant} preprocessing complete. Files saved to {output_path}")
+
+
+@beartype
+def process_wikidata5m_transductive(data_dir: str, output_dir: str) -> None:
+    """Process Wikidata5M transductive dataset with SimKGC-compatible settings.
+    
+    Args:
+        data_dir: Directory containing raw files
+        output_dir: Directory to save processed files
+    """
+    preprocess_wikidata5m_variant(
+        data_dir=data_dir,
+        output_dir=output_dir,
+        variant="transductive",
+        entity_desc_max_words=50,  # SimKGC default for entities
+        relation_desc_max_words=30  # SimKGC default for Wikidata5M relations
+    )
+
+
+@beartype
+def process_wikidata5m_inductive(data_dir: str, output_dir: str) -> None:
+    """Process Wikidata5M inductive dataset with SimKGC-compatible settings.
+    
+    Args:
+        data_dir: Directory containing raw files
+        output_dir: Directory to save processed files
+    """
+    preprocess_wikidata5m_variant(
+        data_dir=data_dir,
+        output_dir=output_dir,
+        variant="inductive",
+        entity_desc_max_words=50,  # SimKGC default for entities
+        relation_desc_max_words=30  # SimKGC default for Wikidata5M relations
+    )

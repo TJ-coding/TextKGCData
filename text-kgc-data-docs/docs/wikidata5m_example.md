@@ -1,53 +1,191 @@
-# Tutorial: Processing Wikidata5M Data with TextKGCData CLI
+# Wikidata5M Processing Guide
 
-This tutorial guides you through the complete workflow for processing the Wikidata5M dataset using the TextKGCData CLI, from downloading the raw data to loading the processed files for use in your code.
+## Command Reference
 
----
-
-## 1. Download the Wikidata5M Dataset
-
-First, download the text-based KGC dataset (including Wikidata5M) from the SimKGC repository:
-
-```shell {.copy}
-tkg download-text-kgc-dataset --data-dir-name wikidata5m
-```
-
-This will create a directory (default: `wikidata5m/`) with the raw data files.
-
----
-
-## 2. Standardize Entity Files
-
-Convert the raw Wikidata5M entity files into standardized files for entity IDs, names, and descriptions:
-
-```shell {.copy}
-tkg standardize-wikidata5m-entity-files-cli \
-  --entity-names-source-path wikidata5m/wikidata5m_entity.txt \
-  --entity-descriptions-source-path wikidata5m/wikidata5m_text.txt \
-  --entity-id-save-path wikidata5m_tkg/entity_ids.txt \
-  --entity-id2name-save-path wikidata5m_tkg/entity_id2name.json \
-  --entity-id2description-save-path wikidata5m_tkg/entity_id2description.json
-```
-
-This will generate:
-- `wikidata5m_tkg/entity_ids.txt`
-- `wikidata5m_tkg/entity_id2name.json`
-- `wikidata5m_tkg/entity_id2description.json`
+| Command | Purpose |
+|---------|---------|
+| `text-kgc wikidata5m download-transductive` | Download transductive evaluation data |
+| `text-kgc wikidata5m download-inductive` | Download inductive evaluation data |
+| `text-kgc wikidata5m process-transductive` | Process transductive variant |
+| `text-kgc wikidata5m process-inductive` | Process inductive variant |
+| `text-kgc wikidata5m create-entity-text` | Create entity name/description mappings |
+| `text-kgc wikidata5m create-relation-text` | Create relation name mappings |
+| `text-kgc wikidata5m process-pipeline` | Complete pipeline with options |
+| `text-kgc wikidata5m fill-missing-entries` | Fill missing entity entries |
+| `text-kgc wikidata5m truncate-descriptions` | Truncate descriptions to word limit |
 
 ---
 
-## 3. Standardize Relation File
+## Quick Start
 
-Convert the raw Wikidata5M relations file into a standardized JSON mapping:
+**Single Variants:**
 
+*Transductive Setting:*
 ```shell {.copy}
-tkg standardize-wikidata5m-relation-file-cli \
-  --relations-source-path wikidata5m/wikidata5m_relation.txt \
-  --relation-id2name-save-path wikidata5m_tkg/relation_id2name.json
+text-kgc wikidata5m download-transductive data/raw/wikidata5m-transductive
+text-kgc wikidata5m process-transductive data/raw/wikidata5m-transductive data/standardised/wikidata5m-transductive
 ```
 
-This will generate:
-- `wikidata5m_tkg/relation_id2name.json`
+*Inductive Setting:*
+```shell {.copy}
+text-kgc wikidata5m download-inductive data/raw/wikidata5m-inductive
+text-kgc wikidata5m process-inductive data/raw/wikidata5m-inductive data/standardised/wikidata5m-inductive
+```
+
+**All Datasets (Recommended):**
+```shell {.copy}
+text-kgc download-and-process-all
+```
+
+---
+
+## Step-by-Step Processing
+
+### Transductive Evaluation
+
+**1. Download Transductive Dataset**
+```shell {.copy}
+text-kgc wikidata5m download-transductive data/raw/wikidata5m-transductive
+```
+
+**2. Process Transductive Variant**
+```shell {.copy}
+text-kgc wikidata5m process-transductive \
+  data/raw/wikidata5m-transductive \
+  data/standardised/wikidata5m-transductive
+```
+
+**3. Pipeline (Alternative)**
+```shell {.copy}
+text-kgc wikidata5m process-pipeline \
+  data/raw/wikidata5m-transductive \
+  data/standardised/wikidata5m-transductive \
+  --variant transductive \
+  --fill-missing \
+  --truncate-descriptions \
+  --max-words 50
+```
+
+### Inductive Evaluation
+
+**1. Download Inductive Dataset**
+```shell {.copy}
+text-kgc wikidata5m download-inductive data/raw/wikidata5m-inductive
+```
+
+**2. Process Inductive Variant**
+```shell {.copy}
+text-kgc wikidata5m process-inductive \
+  data/raw/wikidata5m-inductive \
+  data/standardised/wikidata5m-inductive
+```
+
+**3. Pipeline (Alternative)**
+```shell {.copy}
+text-kgc wikidata5m process-pipeline \
+  data/raw/wikidata5m-inductive \
+  data/standardised/wikidata5m-inductive \
+  --variant inductive \
+  --fill-missing \
+  --truncate-descriptions \
+  --max-words 50
+```
+
+---
+
+## Python Usage
+
+**Transductive:**
+```python {.copy}
+from text_kgc_data.tkg_io import load_tkg_from_files
+
+textual_wikidata5m_trans = load_tkg_from_files(
+    "data/standardised/wikidata5m-transductive/entity_id2name.json",
+    "data/standardised/wikidata5m-transductive/entity_id2description.json", 
+    "data/standardised/wikidata5m-transductive/relation_id2name.json"
+)
+```
+
+**Inductive:**
+```python {.copy}
+from text_kgc_data.tkg_io import load_tkg_from_files
+
+textual_wikidata5m_ind = load_tkg_from_files(
+    "data/standardised/wikidata5m-inductive/entity_id2name.json",
+    "data/standardised/wikidata5m-inductive/entity_id2description.json", 
+    "data/standardised/wikidata5m-inductive/relation_id2name.json"
+)
+```
+
+---
+
+## Preprocessing Details for Academic Papers
+
+### Wikidata5M Dataset Specification
+- **Source**: Wikidata Knowledge Graph (subset)
+- **Entities**: ~5 million entities total
+- **Relations**: 822 semantic relations
+- **Evaluation Settings**: 
+  - **Transductive**: 4,594,485 train / 23,298 validation / 23,357 test triplets
+  - **Inductive**: Disjoint entity sets between train and test
+
+### Text Processing Methodology
+
+**Entity Name Processing:**
+- Uses Wikidata entity labels as primary names
+- Truncates entity names to 10 words maximum
+- Handles multilingual labels (English preference)
+- Example: `Q42` → `Douglas Adams`
+
+**Entity Description Processing:**
+- Sources descriptions from Wikidata entity descriptions
+- Truncates to 50 words maximum using word-based splitting
+- Maintains original description quality from Wikidata
+
+**Relation Name Processing:**
+- Converts Wikidata property identifiers to human-readable names
+- Truncates relation names to 30 words maximum
+- Example: `P31` → `instance of`
+
+**Text Truncation:**
+- Method: Word-based truncation (not subword tokenization)
+- Implementation: `text.split()[:max_words]` followed by `' '.join()`
+- Entity descriptions: 50 words maximum
+- Relation descriptions: 30 words maximum
+- Entity names: 10 words maximum (Wikidata5M specific)
+- Rationale: Ensures consistent text lengths across tokenizers
+
+**Missing Data Handling:**
+- Strategy: Empty string (`''`) for missing descriptions
+- No artificial placeholder tokens introduced
+- Maintains data structure consistency
+
+**Evaluation Settings:**
+- **Transductive**: All entities in train/validation/test are from the same set
+- **Inductive**: Test entities are disjoint from training entities
+- Both settings use identical preprocessing methodology
+
+**Text Sources:**
+- Entity descriptions: Wikidata entity descriptions
+- Entity names: Wikidata entity labels
+- Relation names: Wikidata property labels
+
+**Technical Specifications:**
+- Character encoding: UTF-8
+- Tokenizer compatibility: BERT-base-uncased (default)
+- Output format: Standardized JSON mappings + plain text entity lists
+- SimKGC compatibility: Full preprocessing pipeline alignment
+
+**Citation Notes:**
+This preprocessing follows SimKGC methodology (Wang et al., 2022). Word-based truncation ensures reproducibility across different tokenization schemes. For academic use, specify: "Wikidata5M entity descriptions truncated to 50 words, relation descriptions to 30 words, entity names to 10 words using word-based splitting."
+
+---
+
+## Paper-Ready Summary
+
+**Copy-paste for Methods section:**
+
+*Wikidata5M Dataset Preprocessing:* We process the Wikidata5M dataset using SimKGC-compatible preprocessing following Wang et al. (2022). The dataset supports both transductive and inductive evaluation settings with 4,594,485/23,298/23,357 train/validation/test triplets for transductive evaluation. Entity names and descriptions are sourced from Wikidata labels and descriptions respectively. Entity descriptions are truncated to 50 words, relation names to 30 words, and entity names to 10 words using word-based splitting. The inductive setting uses disjoint entity sets between training and test data to evaluate generalization to unseen entities. Missing descriptions are represented as empty strings to maintain consistent data structure.
 
 ---
 

@@ -80,6 +80,7 @@ text_kgc_data/
 │   ├── wn18rr.py        # WN18RR-specific functions
 │   └── wikidata5m.py    # Wikidata5M-specific functions
 ├── processors.py        # General processing functions
+├── truncation.py        # Text truncation utilities (new)
 ├── io.py               # File I/O utilities
 ├── cli.py              # Command-line interface
 └── __init__.py         # Public API
@@ -91,7 +92,15 @@ Functions are named after **exactly what they create**:
 - `create_entity_id2name_wn18rr()` → creates entity_id2name mapping
 - `create_relation_id2name_wikidata5m()` → creates relation_id2name mapping  
 - `fill_missing_entity_entries()` → fills missing entries in entity mappings
-- `truncate_entity_descriptions()` → truncates descriptions to token limit
+- `truncate_descriptions()` → truncates descriptions with dataset-aware limits
+- `truncate_text_by_words()` → truncates single text by word count
+
+## New Truncation Architecture
+
+The toolkit now separates truncation logic into a dedicated module:
+- **`truncation.py`**: Reusable truncation functions with dataset-aware limits
+- **`processors.py`**: General preprocessing utilities (backward compatible)
+- **Configurable**: Easy to add new datasets with custom truncation limits
 
 ## Available Commands
 

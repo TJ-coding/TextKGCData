@@ -85,11 +85,14 @@ def _parse_tsv_lines(content: str) -> List[Tuple[str, ...]]:
 
 
 def _clean_wn18rr_entity_name(raw_name: str) -> str:
-    """Clean WN18RR entity name by removing POS tags.
+    """Clean WN18RR entity name by removing __ prefix and POS tags.
     
-    Example: 'dog.n.01' -> 'dog'
+    Example: '__stool_NN_2' -> 'stool'
     """
-    return " ".join(raw_name.split("_")[:-2]).strip()
+    # Remove __ prefix like SimKGC does
+    clean_name = raw_name.replace('__', '')
+    # Remove POS tags (last 2 parts after splitting by _)
+    return " ".join(clean_name.split("_")[:-2]).strip()
 
 
 @beartype
@@ -182,3 +185,68 @@ def create_entity_ids_wn18rr(entity_id2name: Dict[str, str], entity_id2descripti
     """
     all_entity_ids = set(entity_id2name.keys()) | set(entity_id2description.keys())
     return sorted(all_entity_ids)
+
+
+@beartype
+def process_wn18rr_dataset(data_dir: str, output_dir: str) -> None:
+    """Complete WN18RR dataset processing pipeline with SimKGC compatibility.
+    
+    Args:
+        data_dir: Directory containing raw WN18RR files
+        output_dir: Directory to save processed files
+    """
+    from ..processors import truncate_entity_descriptions, preprocess_triplet_data
+    
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    print("Loading WN18RR entity names...")
+    entity_id2name = create_entity_id2name_wn18rr(data_dir)
+    
+    print("Loading WN18RR entity descriptions...")
+    entity_id2description = create_entity_id2description_wn18rr(data_dir)
+    
+    print("Loading WN18RR relation names...")
+    relation_id2name = create_relation_id2name_wn18rr(data_dir)
+    
+    # Combine entity names and descriptions (prioritize descriptions)
+    entity_descriptions = {}
+    for entity_id in set(entity_id2name.keys()) | set(entity_id2description.keys()):
+        desc = entity_id2description.get(entity_id, '')
+        name = entity_id2name.get(entity_id, '')
+        # Use description if available, otherwise use name
+        entity_descriptions[entity_id] = desc if desc else name
+    
+    # Apply SimKGC-compatible truncation for WN18RR
+    print("Truncating entity descriptions...")
+    entity_descriptions = truncate_entity_descriptions(
+        entity_descriptions,
+        dataset='wn18rr',
+        content_type='entity'  # Uses 50 words for WN18RR entities
+    )
+    
+    print("Truncating relation descriptions...")
+    relation_descriptions = truncate_entity_descriptions(
+        relation_id2name,
+        dataset='wn18rr', 
+        content_type='relation'  # Uses 30 words for WN18RR relations
+    )
+    
+    # Process each split
+    for split in ['train', 'valid', 'test']:
+        input_file = os.path.join(data_dir, f"{split}.txt")
+        output_file = output_path / f"{split}_processed.txt"
+        
+        if os.path.exists(input_file):
+            print(f"Processing {split} split...")
+            preprocess_triplet_data(
+                triplets_file=input_file,
+                entity_descriptions=entity_descriptions,
+                relation_descriptions=relation_descriptions,
+                output_file=str(output_file),
+                dataset='wn18rr'
+            )
+        else:
+            print(f"Warning: {input_file} not found, skipping {split} split")
+    
+    print(f"WN18RR processing complete. Files saved to {output_path}")
