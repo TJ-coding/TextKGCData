@@ -2,6 +2,8 @@
 
 A simple, functional toolkit for downloading, processing, and working with knowledge graph datasets for text-based knowledge graph completion. Follows Unix philosophy with composable functions that do one thing well.
 
+Documentation: https://tj-coding.github.io/TextKGCData/
+
 ## Features
 
 - **Functional Design**: Pure functions with clear inputs/outputs  
