@@ -10,11 +10,11 @@
       
       
       
-        <link rel="canonical" href="https://tj-coding.github.io/TextKGCData/wikidata5m_example/">
+      
+        <link rel="prev" href="../fb15k237_example/">
       
       
-        <link rel="prev" href="../wn18rr_example/">
-      
+        <link rel="next" href="../adding_datasets/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Wikidata5m Example - text-kgc-data</title>
+        <title>Wikidata5M Example - text-kgc-data</title>
       
     
     
@@ -33,23 +33,6 @@
       
       
 
-
-  
-  
-    
-    
-      
-    
-    
-  
-    
-    
-      
-    
-    
-  
-  
-  <style>:root{.md-tag.md-tag--labbook{--md-tag-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M8%208.807V3.5h-.563a.75.75%200%200%201%200-1.5h9.125a.75.75%200%200%201%200%201.5H16v5.307l5.125%209.301c.964%201.75-.302%203.892-2.299%203.892H5.174c-1.998%200-3.263-2.142-2.3-3.892ZM4.189%2018.832a1.123%201.123%200%200%200%20.985%201.668h13.652a1.123%201.123%200%200%200%20.985-1.668L17.7%2015H6.3ZM14.5%203.5h-5V9a.75.75%200%200%201-.093.362L7.127%2013.5h9.746l-2.28-4.138A.75.75%200%200%201%2014.5%209Z%22/%3E%3C/svg%3E');}.md-tag.md-tag--strategic-plan{--md-tag-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22m6.91%205.5%202.3%202.29-1.42%201.42-2.29-2.3-2.29%202.3-1.42-1.42%202.3-2.29-2.3-2.29%201.42-1.42%202.29%202.3%202.29-2.3%201.42%201.42m13%2013-1.42-1.42-2.29%202.3-2.29-2.3-1.42%201.42%202.3%202.29-2.3%202.29%201.42%201.42%202.29-2.3%202.29%202.3%201.42-1.42-2.3-2.29m.49-11.67L17.18%2011%2015.6%209.73l1.17-1.5a9.08%209.08%200%200%200-6.66%205.62A4.5%204.5%200%201%201%207.5%2013a4%204%200%200%201%20.78.08%2011.27%2011.27%200%200%201%208.15-6.82L15%205.18l1.27-1.58M10%2017.5A2.5%202.5%200%201%200%207.5%2020a2.5%202.5%200%200%200%202.5-2.5%22/%3E%3C/svg%3E');}}</style>
 
     
     
@@ -99,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tutorial-processing-wikidata5m-data-with-textkgcdata-cli" class="md-skip">
+        <a href="#wikidata5m-processing-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +101,7 @@
     <a href=".." title="text-kgc-data" class="md-header__button md-logo" aria-label="text-kgc-data" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4m6 14c0 .5-2.13 2-6 2s-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23zm0-4.55c-1.3.95-3.58 1.55-6 1.55s-4.7-.6-6-1.55V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36zM12 9C8.13 9 6 7.5 6 7s2.13-2 6-2 6 1.5 6 2-2.13 2-6 2"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -135,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Wikidata5m Example
+              Wikidata5M Example
             
           </span>
         </div>
@@ -228,7 +211,7 @@
         <a href="https://github.com/TJ-coding/TextKGCData" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     TJ-coding/TextKGCData
@@ -264,7 +247,7 @@
     <a href=".." title="text-kgc-data" class="md-nav__button md-logo" aria-label="text-kgc-data" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4m6 14c0 .5-2.13 2-6 2s-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23zm0-4.55c-1.3.95-3.58 1.55-6 1.55s-4.7-.6-6-1.55V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36zM12 9C8.13 9 6 7.5 6 7s2.13-2 6-2 6 1.5 6 2-2.13 2-6 2"/></svg>
 
     </a>
     text-kgc-data
@@ -274,7 +257,7 @@
       <a href="https://github.com/TJ-coding/TextKGCData" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     TJ-coding/TextKGCData
@@ -354,6 +337,28 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../fb15k237_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FB15k-237 Example
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -371,7 +376,7 @@
   
   
   <span class="md-ellipsis">
-    Wikidata5m Example
+    Wikidata5M Example
     
   </span>
   
@@ -384,7 +389,7 @@
   
   
   <span class="md-ellipsis">
-    Wikidata5m Example
+    Wikidata5M Example
     
   </span>
   
@@ -407,27 +412,102 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-download-the-wikidata5m-dataset" class="md-nav__link">
+  <a href="#command-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Download the Wikidata5M Dataset
+      Command Reference
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-standardize-entity-files" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Standardize Entity Files
+      Quick Start
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-standardize-relation-file" class="md-nav__link">
+  <a href="#step-by-step-processing" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Standardize Relation File
+      Step-by-Step Processing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transductive-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transductive Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inductive-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inductive Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preprocessing-details-for-academic-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preprocessing Details for Academic Papers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Preprocessing Details for Academic Papers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wikidata5m-dataset-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wikidata5M Dataset Specification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-processing-methodology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Text Processing Methodology
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paper-ready-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paper-Ready Summary
     </span>
   </a>
   
@@ -477,6 +557,28 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adding_datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding New Datasets
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -504,27 +606,102 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-download-the-wikidata5m-dataset" class="md-nav__link">
+  <a href="#command-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Download the Wikidata5M Dataset
+      Command Reference
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-standardize-entity-files" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Standardize Entity Files
+      Quick Start
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-standardize-relation-file" class="md-nav__link">
+  <a href="#step-by-step-processing" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Standardize Relation File
+      Step-by-Step Processing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transductive-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transductive Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inductive-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inductive Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preprocessing-details-for-academic-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preprocessing Details for Academic Papers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Preprocessing Details for Academic Papers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wikidata5m-dataset-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wikidata5M Dataset Specification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-processing-methodology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Text Processing Methodology
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paper-ready-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paper-Ready Summary
     </span>
   </a>
   
@@ -598,37 +775,181 @@
   
 
 
-<h1 id="tutorial-processing-wikidata5m-data-with-textkgcdata-cli">Tutorial: Processing Wikidata5M Data with TextKGCData CLI<a class="headerlink" href="#tutorial-processing-wikidata5m-data-with-textkgcdata-cli" title="Permanent link">¶</a></h1>
-<p>This tutorial guides you through the complete workflow for processing the Wikidata5M dataset using the TextKGCData CLI, from downloading the raw data to loading the processed files for use in your code.</p>
+<h1 id="wikidata5m-processing-guide">Wikidata5M Processing Guide<a class="headerlink" href="#wikidata5m-processing-guide" title="Permanent link">¶</a></h1>
+<h2 id="command-reference">Command Reference<a class="headerlink" href="#command-reference" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text-kgc wikidata5m download-transductive</code></td>
+<td>Download transductive evaluation data</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m download-inductive</code></td>
+<td>Download inductive evaluation data</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m process-transductive</code></td>
+<td>Process transductive variant</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m process-inductive</code></td>
+<td>Process inductive variant</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m create-entity-text</code></td>
+<td>Create entity name/description mappings</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m create-relation-text</code></td>
+<td>Create relation name mappings</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m process-pipeline</code></td>
+<td>Complete pipeline with options</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m fill-missing-entries</code></td>
+<td>Fill missing entity entries</td>
+</tr>
+<tr>
+<td><code>text-kgc wikidata5m truncate-descriptions</code></td>
+<td>Truncate descriptions to word limit</td>
+</tr>
+</tbody>
+</table>
 <hr/>
-<h2 id="1-download-the-wikidata5m-dataset">1. Download the Wikidata5M Dataset<a class="headerlink" href="#1-download-the-wikidata5m-dataset" title="Permanent link">¶</a></h2>
-<p>First, download the text-based KGC dataset (including Wikidata5M) from the SimKGC repository:</p>
-<div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>download-text-kgc-dataset<span class="w"> </span>--data-dir-name<span class="w"> </span>wikidata5m
-</code></pre></div>
-<p>This will create a directory (default: <code>wikidata5m/</code>) with the raw data files.</p>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
+<p><strong>Single Variants:</strong></p>
+<p><em>Transductive Setting:</em>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>download-transductive<span class="w"> </span>data/raw/wikidata5m-transductive
+text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-transductive<span class="w"> </span>data/raw/wikidata5m-transductive<span class="w"> </span>data/standardised/wikidata5m-transductive
+</code></pre></div></p>
+<p><em>Inductive Setting:</em>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>download-inductive<span class="w"> </span>data/raw/wikidata5m-inductive
+text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-inductive<span class="w"> </span>data/raw/wikidata5m-inductive<span class="w"> </span>data/standardised/wikidata5m-inductive
+</code></pre></div></p>
+<p><strong>All Datasets (Recommended):</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>download-and-process-all
+</code></pre></div></p>
 <hr/>
-<h2 id="2-standardize-entity-files">2. Standardize Entity Files<a class="headerlink" href="#2-standardize-entity-files" title="Permanent link">¶</a></h2>
-<p>Convert the raw Wikidata5M entity files into standardized files for entity IDs, names, and descriptions:</p>
-<div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>standardize-wikidata5m-entity-files-cli<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-names-source-path<span class="w"> </span>wikidata5m/wikidata5m_entity.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-descriptions-source-path<span class="w"> </span>wikidata5m/wikidata5m_text.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id-save-path<span class="w"> </span>wikidata5m_tkg/entity_ids.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2name-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2name.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--entity-id2description-save-path<span class="w"> </span>wikidata5m_tkg/entity_id2description.json
-</code></pre></div>
-<p>This will generate:
-- <code>wikidata5m_tkg/entity_ids.txt</code>
-- <code>wikidata5m_tkg/entity_id2name.json</code>
-- <code>wikidata5m_tkg/entity_id2description.json</code></p>
+<h2 id="step-by-step-processing">Step-by-Step Processing<a class="headerlink" href="#step-by-step-processing" title="Permanent link">¶</a></h2>
+<h3 id="transductive-evaluation">Transductive Evaluation<a class="headerlink" href="#transductive-evaluation" title="Permanent link">¶</a></h3>
+<p><strong>1. Download Transductive Dataset</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>download-transductive<span class="w"> </span>data/raw/wikidata5m-transductive
+</code></pre></div></p>
+<p><strong>2. Process Transductive Variant</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-transductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/raw/wikidata5m-transductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/standardised/wikidata5m-transductive
+</code></pre></div></p>
+<p><strong>3. Pipeline (Alternative)</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/raw/wikidata5m-transductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/standardised/wikidata5m-transductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--variant<span class="w"> </span>transductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--fill-missing<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--truncate-descriptions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-words<span class="w"> </span><span class="m">50</span>
+</code></pre></div></p>
+<h3 id="inductive-evaluation">Inductive Evaluation<a class="headerlink" href="#inductive-evaluation" title="Permanent link">¶</a></h3>
+<p><strong>1. Download Inductive Dataset</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>download-inductive<span class="w"> </span>data/raw/wikidata5m-inductive
+</code></pre></div></p>
+<p><strong>2. Process Inductive Variant</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-inductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/raw/wikidata5m-inductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/standardised/wikidata5m-inductive
+</code></pre></div></p>
+<p><strong>3. Pipeline (Alternative)</strong>
+<div class="copy highlight"><pre><span></span><code>text-kgc<span class="w"> </span>wikidata5m<span class="w"> </span>process-pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/raw/wikidata5m-inductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data/standardised/wikidata5m-inductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--variant<span class="w"> </span>inductive<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--fill-missing<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--truncate-descriptions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-words<span class="w"> </span><span class="m">50</span>
+</code></pre></div></p>
 <hr/>
-<h2 id="3-standardize-relation-file">3. Standardize Relation File<a class="headerlink" href="#3-standardize-relation-file" title="Permanent link">¶</a></h2>
-<p>Convert the raw Wikidata5M relations file into a standardized JSON mapping:</p>
-<div class="copy highlight"><pre><span></span><code>tkg<span class="w"> </span>standardize-wikidata5m-relation-file-cli<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--relations-source-path<span class="w"> </span>wikidata5m/wikidata5m_relation.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--relation-id2name-save-path<span class="w"> </span>wikidata5m_tkg/relation_id2name.json
-</code></pre></div>
-<p>This will generate:
-- <code>wikidata5m_tkg/relation_id2name.json</code></p>
+<h2 id="python-usage">Python Usage<a class="headerlink" href="#python-usage" title="Permanent link">¶</a></h2>
+<p><strong>Transductive:</strong>
+<div class="copy highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">text_kgc_data.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tkg_from_files</span>
+
+<span class="n">textual_wikidata5m_trans</span> <span class="o">=</span> <span class="n">load_tkg_from_files</span><span class="p">(</span>
+    <span class="s2">"data/standardised/wikidata5m-transductive/entity_id2name.json"</span><span class="p">,</span>
+    <span class="s2">"data/standardised/wikidata5m-transductive/entity_id2description.json"</span><span class="p">,</span> 
+    <span class="s2">"data/standardised/wikidata5m-transductive/relation_id2name.json"</span>
+<span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Inductive:</strong>
+<div class="copy highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">text_kgc_data.tkg_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tkg_from_files</span>
+
+<span class="n">textual_wikidata5m_ind</span> <span class="o">=</span> <span class="n">load_tkg_from_files</span><span class="p">(</span>
+    <span class="s2">"data/standardised/wikidata5m-inductive/entity_id2name.json"</span><span class="p">,</span>
+    <span class="s2">"data/standardised/wikidata5m-inductive/entity_id2description.json"</span><span class="p">,</span> 
+    <span class="s2">"data/standardised/wikidata5m-inductive/relation_id2name.json"</span>
+<span class="p">)</span>
+</code></pre></div></p>
+<hr/>
+<h2 id="preprocessing-details-for-academic-papers">Preprocessing Details for Academic Papers<a class="headerlink" href="#preprocessing-details-for-academic-papers" title="Permanent link">¶</a></h2>
+<h3 id="wikidata5m-dataset-specification">Wikidata5M Dataset Specification<a class="headerlink" href="#wikidata5m-dataset-specification" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Source</strong>: Wikidata Knowledge Graph (subset)</li>
+<li><strong>Entities</strong>: ~5 million entities total</li>
+<li><strong>Relations</strong>: 822 semantic relations</li>
+<li><strong>Evaluation Settings</strong>: </li>
+<li><strong>Transductive</strong>: 4,594,485 train / 23,298 validation / 23,357 test triplets</li>
+<li><strong>Inductive</strong>: Disjoint entity sets between train and test</li>
+</ul>
+<h3 id="text-processing-methodology">Text Processing Methodology<a class="headerlink" href="#text-processing-methodology" title="Permanent link">¶</a></h3>
+<p><strong>Entity Name Processing:</strong>
+- Uses Wikidata entity labels as primary names
+- Truncates entity names to 10 words maximum
+- Handles multilingual labels (English preference)
+- Example: <code>Q42</code> → <code>Douglas Adams</code></p>
+<p><strong>Entity Description Processing:</strong>
+- Sources descriptions from Wikidata entity descriptions
+- Truncates to 50 words maximum using word-based splitting
+- Maintains original description quality from Wikidata</p>
+<p><strong>Relation Name Processing:</strong>
+- Converts Wikidata property identifiers to human-readable names
+- Truncates relation names to 30 words maximum
+- Example: <code>P31</code> → <code>instance of</code></p>
+<p><strong>Text Truncation:</strong>
+- Method: Word-based truncation (not subword tokenization)
+- Implementation: <code>text.split()[:max_words]</code> followed by <code>' '.join()</code>
+- Entity descriptions: 50 words maximum
+- Relation descriptions: 30 words maximum
+- Entity names: 10 words maximum (Wikidata5M specific)
+- Rationale: Ensures consistent text lengths across tokenizers</p>
+<p><strong>Missing Data Handling:</strong>
+- Strategy: Empty string (<code>''</code>) for missing descriptions
+- No artificial placeholder tokens introduced
+- Maintains data structure consistency</p>
+<p><strong>Evaluation Settings:</strong>
+- <strong>Transductive</strong>: All entities in train/validation/test are from the same set
+- <strong>Inductive</strong>: Test entities are disjoint from training entities
+- Both settings use identical preprocessing methodology</p>
+<p><strong>Text Sources:</strong>
+- Entity descriptions: Wikidata entity descriptions
+- Entity names: Wikidata entity labels
+- Relation names: Wikidata property labels</p>
+<p><strong>Technical Specifications:</strong>
+- Character encoding: UTF-8
+- Tokenizer compatibility: BERT-base-uncased (default)
+- Output format: Standardized JSON mappings + plain text entity lists
+- SimKGC compatibility: Full preprocessing pipeline alignment</p>
+<p><strong>Citation Notes:</strong>
+This preprocessing follows SimKGC methodology (Wang et al., 2022). Word-based truncation ensures reproducibility across different tokenization schemes. For academic use, specify: "Wikidata5M entity descriptions truncated to 50 words, relation descriptions to 30 words, entity names to 10 words using word-based splitting."</p>
+<hr/>
+<h2 id="paper-ready-summary">Paper-Ready Summary<a class="headerlink" href="#paper-ready-summary" title="Permanent link">¶</a></h2>
+<p><strong>Copy-paste for Methods section:</strong></p>
+<p><em>Wikidata5M Dataset Preprocessing:</em> We process the Wikidata5M dataset using SimKGC-compatible preprocessing following Wang et al. (2022). The dataset supports both transductive and inductive evaluation settings with 4,594,485/23,298/23,357 train/validation/test triplets for transductive evaluation. Entity names and descriptions are sourced from Wikidata labels and descriptions respectively. Entity descriptions are truncated to 50 words, relation names to 30 words, and entity names to 10 words using word-based splitting. The inductive setting uses disjoint entity sets between training and test data to evaluate generalization to unseen entities. Missing descriptions are represented as empty strings to maintain consistent data structure.</p>
 <hr/>
 <h2 id="4-fill-missing-entity-namesdescriptions-optional">4. Fill Missing Entity Names/Descriptions (Optional)<a class="headerlink" href="#4-fill-missing-entity-namesdescriptions-optional" title="Permanent link">¶</a></h2>
 <p>If you want to ensure that every entity has both a name and a description, fill missing entries with a placeholder:</p>
