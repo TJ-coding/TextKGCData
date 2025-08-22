@@ -1,7 +1,9 @@
 """Command-line interface for text-kgc-data toolkit."""
 
+import os
 from pathlib import Path
 from typing import Optional
+from unittest import result
 import typer
 from beartype import beartype
 
@@ -274,13 +276,25 @@ def truncate_descriptions_cmd(
 
 @wn18rr_app.command("process")
 def wn18rr_process_cmd(
-    data_dir: str = typer.Argument(..., help="Directory containing raw WN18RR files"),
-    output_dir: str = typer.Argument(..., help="Directory to save processed files"),
+    data_dir: str = typer.Argument('data/raw/wn18rr/WN18RR', help="Directory containing raw WN18RR files"),
+    output_dir: str = typer.Argument('data/standardised/wn18rr', help="Directory to save processed files"),
 ):
     """Process WN18RR dataset with SimKGC-compatible preprocessing."""
+    import shutil
     typer.echo("Processing WN18RR dataset with SimKGC compatibility...")
-    process_wn18rr_dataset(data_dir, output_dir)
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    entity_id2name, entity_description2name, relation_id2name = process_wn18rr_dataset(data_dir)
+
+    # Save results
+    save_json(entity_id2name, output_path / "entity_id2name.json")
+    save_json(entity_description2name, output_path / "entity_description2name.json")
+    save_json(relation_id2name, output_path / "relation_id2name.json")
+    shutil.copy(Path(data_dir) / "train.txt", output_path / "train.tsv")
+    shutil.copy(Path(data_dir) / "valid.txt", output_path / "valid.tsv")
+    shutil.copy(Path(data_dir) / "test.txt", output_path / "test.tsv")
     typer.echo(f"✅ WN18RR processing complete!")
+    
 
 
 # ===== FB15k-237 Commands =====
@@ -302,8 +316,22 @@ def fb15k237_process_cmd(
 ):
     """Process FB15k-237 dataset with SimKGC-compatible preprocessing."""
     typer.echo("Processing FB15k-237 dataset with SimKGC compatibility...")
-    process_fb15k237_dataset(data_dir, output_dir)
-    typer.echo(f"✅ FB15k-237 processing complete!")
+    from text_kgc_data.datasets.fb15k237 import preprocess_fb15k237_triplets
+    import shutil
+    output_path = Path(output_dir)
+    ensure_directory_exists(output_path)
+    entity_id2name, entity_id2description, relation_id2name = preprocess_fb15k237_triplets(
+        data_dir=data_dir,
+        entity_desc_max_words=50,
+        relation_desc_max_words=10
+    )
+    save_json(entity_id2name, output_path / "entity_id2name.json")
+    save_json(entity_id2description, output_path / "entity_id2description.json")
+    save_json(relation_id2name, output_path / "relation_id2name.json")
+    shutil.copy(Path(data_dir)/"train.txt", output_path / "train.tsv")
+    shutil.copy(Path(data_dir)/"valid.txt", output_path / "valid.tsv")
+    shutil.copy(Path(data_dir)/"test.txt", output_path / "test.tsv")
+    typer.echo(f"✅ FB15k-237 processing complete! Outputs saved to: {output_path}")
 
 
 # ===== Wikidata5M Transductive/Inductive Commands =====
@@ -335,8 +363,24 @@ def wikidata5m_process_transductive_cmd(
 ):
     """Process Wikidata5M transductive dataset with SimKGC-compatible preprocessing."""
     typer.echo("Processing Wikidata5M transductive dataset with SimKGC compatibility...")
-    process_wikidata5m_transductive(data_dir, output_dir)
-    typer.echo(f"✅ Wikidata5M transductive processing complete!")
+    from text_kgc_data.datasets.wikidata5m import preprocess_wikidata5m_transductive
+    import shutil
+    output_path = Path(output_dir)
+    ensure_directory_exists(output_path)
+    entity_id2name, entity_id2description, relation_id2name = preprocess_wikidata5m_transductive(
+        data_dir=data_dir,
+        entity_desc_max_words=50,
+        relation_desc_max_words=30
+    )
+    save_json(entity_id2name, output_path / "entity_id2name.json")
+    save_json(entity_id2description, output_path / "entity_id2description.json")
+    save_json(relation_id2name, output_path / "relation_id2name.json")
+    # Optionally copy raw splits for reference
+    for split in ['train', 'valid', 'test']:
+        src_file = Path(data_dir) / f"wikidata5m_transductive_{split}.txt"
+        if src_file.exists():
+            shutil.copy(src_file, output_path / f"{split}.tsv")
+    typer.echo(f"✅ Wikidata5M transductive processing complete! Outputs saved to: {output_path}")
 
 
 @wikidata5m_app.command("process-inductive")
@@ -346,8 +390,24 @@ def wikidata5m_process_inductive_cmd(
 ):
     """Process Wikidata5M inductive dataset with SimKGC-compatible preprocessing."""
     typer.echo("Processing Wikidata5M inductive dataset with SimKGC compatibility...")
-    process_wikidata5m_inductive(data_dir, output_dir)
-    typer.echo(f"✅ Wikidata5M inductive processing complete!")
+    from text_kgc_data.datasets.wikidata5m import preprocess_wikidata5m_inductive
+    import shutil
+    output_path = Path(output_dir)
+    ensure_directory_exists(output_path)
+    entity_id2name, entity_id2description, relation_id2name = preprocess_wikidata5m_inductive(
+        data_dir=data_dir,
+        entity_desc_max_words=50,
+        relation_desc_max_words=30
+    )
+    save_json(entity_id2name, output_path / "entity_id2name.json")
+    save_json(entity_id2description, output_path / "entity_id2description.json")
+    save_json(relation_id2name, output_path / "relation_id2name.json")
+    # Optionally copy raw splits for reference
+    for split in ['train', 'valid', 'test']:
+        src_file = Path(data_dir) / f"wikidata5m_inductive_{split}.txt"
+        if src_file.exists():
+            shutil.copy(src_file, output_path / f"{split}.tsv")
+    typer.echo(f"✅ Wikidata5M inductive processing complete! Outputs saved to: {output_path}")
 
 
 def main():

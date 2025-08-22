@@ -6,6 +6,8 @@ different datasets and content types.
 
 from typing import Dict, Optional, Union
 
+import tqdm
+
 
 # Dataset-specific truncation configuration
 TRUNCATION_CONFIGS = {
@@ -103,7 +105,7 @@ def truncate_descriptions(
     effective_limit = get_truncation_limit(dataset, content_type, max_words)
     
     truncated = {}
-    for item_id, description in descriptions.items():
+    for item_id, description in tqdm.tqdm(descriptions.items(), desc="Truncating descriptions"):
         truncated[item_id] = truncate_text_by_words(
             description, 
             effective_limit,

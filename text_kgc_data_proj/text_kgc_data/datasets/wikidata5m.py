@@ -133,12 +133,9 @@ def create_entity_id2name_wikidata5m(entity_names_file: Path) -> Dict[str, str]:
     entity_id2name = {}
     
     for parts in tqdm(entity_name_tuples, desc="Creating entity_id2name"):
-        try:
-            entity_id, entity_name = _extract_first_value(parts)
-            entity_id2name[entity_id] = entity_name
-        except ValueError as e:
-            print(f"Warning: Skipping malformed line: {e}")
-            continue
+        entity_id, entity_name = _extract_first_value(parts)
+        entity_id2name[entity_id] = entity_name
+     
     
     return entity_id2name
 
@@ -193,12 +190,9 @@ def create_relation_id2name_wikidata5m(relations_file: Path) -> Dict[str, str]:
     relation_id2name = {}
     
     for parts in tqdm(relation_tuples, desc="Creating relation_id2name"):
-        try:
-            relation_id, relation_name = _extract_first_value(parts)
-            relation_id2name[relation_id] = relation_name
-        except ValueError as e:
-            print(f"Warning: Skipping malformed line: {e}")
-            continue
+        relation_id, relation_name = _extract_first_value(parts)
+        relation_id2name[relation_id] = relation_name
+
     
     return relation_id2name
 
@@ -305,11 +299,10 @@ def download_wikidata5m_inductive(output_dir: str) -> None:
 @beartype
 def preprocess_wikidata5m_variant(
     data_dir: str,
-    output_dir: str,
     variant: str = "transductive",
     entity_desc_max_words: int = 50,
     relation_desc_max_words: int = 30
-) -> None:
+) -> Tuple[Dict[str, str], Dict[str, str], Dict[str, str]]:
     """Preprocess Wikidata5M transductive or inductive variant.
     
     Args:
@@ -324,81 +317,60 @@ def preprocess_wikidata5m_variant(
     if variant not in ["transductive", "inductive"]:
         raise ValueError("variant must be 'transductive' or 'inductive'")
     
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
-    
     # Load entity and relation mappings
-    print("Loading entity descriptions...")
+    print("Loading entity names and descriptions...")
     entity_id2name = create_entity_id2name_wikidata5m(Path(data_dir)/'wikidata5m_entity.txt')
-    entity_id2description = create_entity_id2description_wikidata5m(Path(data_dir)/'wikidata5m_entity.txt')
+    entity_id2description = create_entity_id2description_wikidata5m(Path(data_dir)/'wikidata5m_text.txt')
 
     print("Loading relation names...")
     relation_id2name = create_relation_id2name_wikidata5m(Path(data_dir)/'wikidata5m_relation.txt')
 
+    # Fill missing entries (if needed, can add a fill_missing_entity_entries step)
     # Combine entity names and descriptions (prioritize descriptions)
     entity_descriptions = {}
     for entity_id in set(entity_id2name.keys()) | set(entity_id2description.keys()):
         desc = entity_id2description.get(entity_id, '')
         name = entity_id2name.get(entity_id, '')
-        # Use description if available, otherwise use name
         entity_descriptions[entity_id] = desc if desc else name
-    
+
     # Truncate descriptions
     print("Truncating entity descriptions...")
-    entity_descriptions = truncate_entity_descriptions(
+    from ..processors import truncate_entity_descriptions
+    truncated_entity_descriptions = truncate_entity_descriptions(
         entity_descriptions,
-        max_words=entity_desc_max_words
+        max_words=entity_desc_max_words,
+        dataset='wikidata5m',
+        content_type='entity'
     )
-    
+
     print("Truncating relation descriptions...")
-    relation_descriptions = truncate_entity_descriptions(
+    truncated_relation_descriptions = truncate_entity_descriptions(
         relation_id2name,
-        max_words=relation_desc_max_words
+        max_words=relation_desc_max_words,
+        dataset='wikidata5m',
+        content_type='relation'
     )
-    
-    # Process each split
-    split_files = {
-        "train": f"wikidata5m_{variant}_train.txt",
-        "valid": f"wikidata5m_{variant}_valid.txt", 
-        "test": f"wikidata5m_{variant}_test.txt"
-    }
-    
-    for split_name, filename in split_files.items():
-        input_file = os.path.join(data_dir, filename)
-        output_file = output_path / f"{split_name}_processed.txt"
-        
-        if not os.path.exists(input_file):
-            print(f"Warning: {input_file} not found, skipping {split_name} split")
-            continue
-            
-        print(f"Processing {split_name} split...")
-        
-        with open(input_file, 'r', encoding='utf-8') as infile, \
-             open(output_file, 'w', encoding='utf-8') as outfile:
-            
-            for line in infile:
-                parts = line.strip().split('\t')
-                if len(parts) >= 3:
-                    head, relation, tail = parts[:3]
-                    
-                    # Get descriptions
-                    head_desc = entity_descriptions.get(head, '')
-                    tail_desc = entity_descriptions.get(tail, '')
-                    rel_desc = relation_descriptions.get(relation, '')
-                    
-                    # Write processed triplet
-                    outfile.write(f"{head}\t{relation}\t{tail}\t{head_desc}\t{rel_desc}\t{tail_desc}\n")
-    # Save Names, Descriptions and Relation Name
-    with open(output_path / "entity_id2name.json", 'w', encoding='utf-8') as f:
-        json.dump(entity_id2name, f, ensure_ascii=False, indent=4)
-        
-    with open(output_path / "entity_id2description.json", 'w', encoding='utf-8') as f:
-        json.dump(entity_id2description, f, ensure_ascii=False, indent=4)
+       
+    print(f"Wikidata5M {variant} preprocessing complete.")
+    return  entity_id2name,  truncated_entity_descriptions,  truncated_relation_descriptions,
 
-    with open(output_path / "relation_id2name.json", 'w', encoding='utf-8') as f:
-        json.dump(relation_id2name, f, ensure_ascii=False, indent=4)
+def preprocess_wikidata5m_transductive(data_dir: str, entity_desc_max_words: int = 50, relation_desc_max_words: int = 30):
+    """Preprocess Wikidata5M transductive variant and return processed dicts and splits."""
+    return preprocess_wikidata5m_variant(
+        data_dir=data_dir,
+        variant="transductive",
+        entity_desc_max_words=entity_desc_max_words,
+        relation_desc_max_words=relation_desc_max_words
+    )
 
-    print(f"Wikidata5M {variant} preprocessing complete. Files saved to {output_path}")
+def preprocess_wikidata5m_inductive(data_dir: str, entity_desc_max_words: int = 50, relation_desc_max_words: int = 30):
+    """Preprocess Wikidata5M inductive variant and return processed dicts and splits."""
+    return preprocess_wikidata5m_variant(
+        data_dir=data_dir,
+        variant="inductive",
+        entity_desc_max_words=entity_desc_max_words,
+        relation_desc_max_words=relation_desc_max_words
+    )
 
 
 @beartype

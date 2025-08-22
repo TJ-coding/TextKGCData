@@ -146,7 +146,6 @@ def load_fb15k_entity_names(data_dir: str) -> Dict[str, str]:
 
 def preprocess_fb15k237_triplets(
     data_dir: str,
-    output_dir: str,
     entity_desc_max_words: int = 50,
     relation_desc_max_words: int = 10
 ) -> None:
@@ -158,70 +157,41 @@ def preprocess_fb15k237_triplets(
         entity_desc_max_words: Maximum words for entity descriptions
         relation_desc_max_words: Maximum words for relation descriptions
     """
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
-    
-    # Load entity descriptions and relation names
-    print("Loading entity descriptions...")
-
+    # Load entity names and descriptions
+    print("Loading entity names and descriptions...")
     entity_names = load_fb15k_entity_names(data_dir)
-
     entity_descriptions = load_fb15k_entity_descriptions(data_dir)
-    
+
+    # Fill missing entries using processors
+    from ..processors import fill_missing_entity_entries, validate_entity_mappings, truncate_entity_descriptions
+    filled_names, filled_descriptions = fill_missing_entity_entries(entity_names, entity_descriptions)
+
+    # Validate mappings
+    if not validate_entity_mappings(filled_names, filled_descriptions):
+        print("Warning: Invalid entity mappings detected.")
+
     print("Loading relation names...")
     relation_names = load_fb15k237_relations(data_dir)
-    
+
     # Truncate descriptions
     print("Truncating entity descriptions...")
-    entity_descriptions = truncate_entity_descriptions(
-        entity_descriptions, 
-        max_words=entity_desc_max_words
+    truncated_descriptions = truncate_entity_descriptions(
+        filled_descriptions,
+        max_words=entity_desc_max_words,
+        dataset='fb15k237',
+        content_type='entity'
     )
-    
+
     print("Truncating relation descriptions...")
-    relation_names = truncate_entity_descriptions(
+    truncated_relations = truncate_entity_descriptions(
         relation_names,
-        max_words=relation_desc_max_words
+        max_words=relation_desc_max_words,
+        dataset='fb15k237',
+        content_type='relation'
     )
-    
-    # Process each split
-    for split in ['train', 'valid', 'test']:
-        input_file = os.path.join(data_dir, f"{split}.txt")
-        output_file = output_path / f"{split}_processed.txt"
-        
-        if not os.path.exists(input_file):
-            print(f"Warning: {input_file} not found, skipping {split} split")
-            continue
-            
-        print(f"Processing {split} split...")
-        
-        with open(input_file, 'r', encoding='utf-8') as infile, \
-             open(output_file, 'w', encoding='utf-8') as outfile:
-            
-            for line in infile:
-                parts = line.strip().split('\t')
-                if len(parts) >= 3:
-                    head, relation, tail = parts[:3]
-                    
-                    # Get descriptions/names
-                    head_desc = entity_descriptions.get(head, '')
-                    tail_desc = entity_descriptions.get(tail, '')
-                    rel_desc = relation_names.get(relation, '')
-                    
-                    # Write processed triplet
-                    outfile.write(f"{head}\t{relation}\t{tail}\t{head_desc}\t{rel_desc}\t{tail_desc}\n")
-    
-    # Save Names, Descriptions and Relation Name
-    with open(output_path / "entity_id2name.json", 'w', encoding='utf-8') as f:
-        json.dump(entity_names, f, ensure_ascii=False, indent=4)
-        
-    with open(output_path / "entity_id2description.json", 'w', encoding='utf-8') as f:
-        json.dump(entity_descriptions, f, ensure_ascii=False, indent=4)
 
-    with open(output_path / "relation_id2name.json", 'w', encoding='utf-8') as f:
-        json.dump(relation_names, f, ensure_ascii=False, indent=4)
-    print(f"Preprocessing complete. Files saved to {output_path}")
-
+    print("Preprocessing complete.")
+    return filled_names, truncated_descriptions, truncated_relations
 
 def process_fb15k237_dataset(data_dir: str, output_dir: str) -> None:
     """Complete FB15k-237 dataset processing pipeline.
