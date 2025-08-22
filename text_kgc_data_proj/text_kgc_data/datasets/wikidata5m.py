@@ -1,5 +1,6 @@
 """Wikidata5M dataset processing functions."""
 
+import json
 import os
 import subprocess
 import shutil
@@ -19,63 +20,77 @@ def download_wikidata5m(output_dir: Path) -> Path:
     Returns:
         Path to the downloaded data directory
     """
-    repo_url = "https://github.com/intfloat/SimKGC.git"
-    temp_dir = "temp_SimKGC"
-    
-    try:
-        # Clean up any existing temp directory
-        if os.path.exists(temp_dir):
-            shutil.rmtree(temp_dir)
-        
-        print(f"Cloning {repo_url}...")
-        result = subprocess.run(
-            ["git", "clone", repo_url, temp_dir], 
-            capture_output=True, 
-            text=True
-        )
-        
-        if result.returncode != 0:
-            raise RuntimeError(f"Failed to clone repository: {result.stderr}")
-        
-        # Run the download script
-        script_path = Path(temp_dir) / "scripts" / "download_wikidata5m.sh"
-        if not script_path.exists():
-            raise FileNotFoundError(f"Download script not found: {script_path}")
-        
-        print("Downloading Wikidata5M dataset...")
-        os.chmod(script_path, 0o755)
-        
-        result = subprocess.run(
-            ["bash", "scripts/download_wikidata5m.sh"],
-            cwd=temp_dir,
-            capture_output=True,
-            text=True
-        )
-        
-        if result.returncode != 0:
-            raise RuntimeError(f"Download script failed: {result.stderr}")
-        
-        # Move Wikidata5M data to output directory
-        source_data_dir = Path(temp_dir) / "data" / "wikidata5m"
-        output_path = Path(output_dir)
-        wikidata5m_output = output_path / "wikidata5m"
-        
-        if source_data_dir.exists():
-            output_path.mkdir(parents=True, exist_ok=True)
-            if wikidata5m_output.exists():
-                print(f"Wikidata5M data already exists at {wikidata5m_output}")
-            else:
-                shutil.copytree(source_data_dir, wikidata5m_output)
-                print(f"Wikidata5M data saved to {wikidata5m_output}")
+    """Python implementation of the provided bash script to download Wikidata5M dataset."""
+    import urllib.request
+    base_dir = Path(output_dir)
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    # Download files
+    files_to_download = {
+        "wikidata5m_text.txt.gz": "https://huggingface.co/datasets/intfloat/wikidata5m/resolve/main/wikidata5m_text.txt.gz",
+        "wikidata5m_transductive.tar.gz": "https://huggingface.co/datasets/intfloat/wikidata5m/resolve/main/wikidata5m_transductive.tar.gz",
+        "wikidata5m_inductive.tar.gz": "https://huggingface.co/datasets/intfloat/wikidata5m/resolve/main/wikidata5m_inductive.tar.gz",
+        "wikidata5m_alias.tar.gz": "https://huggingface.co/datasets/intfloat/wikidata5m/resolve/main/wikidata5m_alias.tar.gz",
+    }
+    for fname, url in files_to_download.items():
+        dest = base_dir / fname
+        if not dest.exists():
+            print(f"Downloading {fname}...")
+            urllib.request.urlretrieve(url, dest)
         else:
-            raise FileNotFoundError(f"Wikidata5M data not found at {source_data_dir}")
-        
-        return wikidata5m_output
-        
-    finally:
-        # Clean up temp directory
-        if os.path.exists(temp_dir):
-            shutil.rmtree(temp_dir)
+            print(f"{fname} already exists, skipping download.")
+
+    # Extract tar files
+    for tarfile in ["wikidata5m_transductive.tar.gz", "wikidata5m_inductive.tar.gz", "wikidata5m_alias.tar.gz"]:
+        tar_path = base_dir / tarfile
+        print(f"Extracting {tarfile}...")
+        subprocess.run(["tar", "xvfz", str(tar_path)], cwd=base_dir, check=True)
+
+    # Gunzip text file
+    gz_path = base_dir / "wikidata5m_text.txt.gz"
+    print("Unzipping wikidata5m_text.txt.gz...")
+    subprocess.run(["gunzip", "-k", str(gz_path)], cwd=base_dir, check=True)
+
+    # Create symlinks for transductive
+    trans_dir = base_dir.parent / "wiki5m_trans"
+    trans_dir.mkdir(parents=True, exist_ok=True)
+    symlinks_trans = {
+        "wikidata5m_relation.txt": trans_dir / "wikidata5m_relation.txt",
+        "wikidata5m_text.txt": trans_dir / "wikidata5m_text.txt",
+        "wikidata5m_entity.txt": trans_dir / "wikidata5m_entity.txt",
+        "wikidata5m_transductive_train.txt": trans_dir / "train.txt",
+        "wikidata5m_transductive_valid.txt": trans_dir / "valid.txt",
+        "wikidata5m_transductive_test.txt": trans_dir / "test.txt",
+    }
+    for src_name, dest_path in symlinks_trans.items():
+        src_path = base_dir / src_name
+        if not dest_path.exists():
+            print(f"Creating symlink: {dest_path} -> {src_path}")
+            dest_path.symlink_to(src_path)
+        else:
+            print(f"Symlink {dest_path} already exists.")
+
+    # Create symlinks for inductive
+    ind_dir = base_dir.parent / "wiki5m_ind"
+    ind_dir.mkdir(parents=True, exist_ok=True)
+    symlinks_ind = {
+        "wikidata5m_relation.txt": ind_dir / "wikidata5m_relation.txt",
+        "wikidata5m_text.txt": ind_dir / "wikidata5m_text.txt",
+        "wikidata5m_entity.txt": ind_dir / "wikidata5m_entity.txt",
+        "wikidata5m_inductive_train.txt": ind_dir / "train.txt",
+        "wikidata5m_inductive_valid.txt": ind_dir / "valid.txt",
+        "wikidata5m_inductive_test.txt": ind_dir / "test.txt",
+    }
+    for src_name, dest_path in symlinks_ind.items():
+        src_path = base_dir / src_name
+        if not dest_path.exists():
+            print(f"Creating symlink: {dest_path} -> {src_path}")
+            dest_path.symlink_to(src_path)
+        else:
+            print(f"Symlink {dest_path} already exists.")
+
+    print("Done")
+    return base_dir
 
 
 def _parse_tsv_lines(content: str) -> List[Tuple[str, ...]]:
@@ -314,12 +329,12 @@ def preprocess_wikidata5m_variant(
     
     # Load entity and relation mappings
     print("Loading entity descriptions...")
-    entity_id2name = create_entity_id2name_wikidata5m(data_dir)
-    entity_id2description = create_entity_id2description_wikidata5m(data_dir) 
-    
+    entity_id2name = create_entity_id2name_wikidata5m(Path(data_dir)/'wikidata5m_entity.txt')
+    entity_id2description = create_entity_id2description_wikidata5m(Path(data_dir)/'wikidata5m_entity.txt')
+
     print("Loading relation names...")
-    relation_id2name = create_relation_id2name_wikidata5m(data_dir)
-    
+    relation_id2name = create_relation_id2name_wikidata5m(Path(data_dir)/'wikidata5m_relation.txt')
+
     # Combine entity names and descriptions (prioritize descriptions)
     entity_descriptions = {}
     for entity_id in set(entity_id2name.keys()) | set(entity_id2description.keys()):
@@ -373,7 +388,16 @@ def preprocess_wikidata5m_variant(
                     
                     # Write processed triplet
                     outfile.write(f"{head}\t{relation}\t{tail}\t{head_desc}\t{rel_desc}\t{tail_desc}\n")
-    
+    # Save Names, Descriptions and Relation Name
+    with open(output_path / "entity_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_id2name, f, ensure_ascii=False, indent=4)
+        
+    with open(output_path / "entity_id2description.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_id2description, f, ensure_ascii=False, indent=4)
+
+    with open(output_path / "relation_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(relation_id2name, f, ensure_ascii=False, indent=4)
+
     print(f"Wikidata5M {variant} preprocessing complete. Files saved to {output_path}")
 
 

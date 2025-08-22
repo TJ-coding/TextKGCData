@@ -1,5 +1,6 @@
 """FB15k-237 dataset processing utilities."""
 
+import json
 import os
 import urllib.request
 from pathlib import Path
@@ -17,21 +18,17 @@ def download_fb15k237(output_dir: str) -> None:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     
-    base_url = "https://raw.githubusercontent.com/DeepGraphLearning/KnowledgeGraphEmbedding/master/data/FB15k-237"
+    base_url = "https://raw.githubusercontent.com/intfloat/SimKGC/main/data/FB15k237"
     
     files_to_download = [
         "train.txt",
         "valid.txt", 
         "test.txt",
-        "entities.dict",
-        "relations.dict"
-    ]
-    
-    # Additional FB15k files from SimKGC data
-    fb15k_files = [
         "FB15k_mid2name.txt",
         "FB15k_mid2description.txt"
     ]
+    
+    # Additional FB15k files from SimKGC data
     
     print(f"Downloading FB15k-237 dataset to {output_path}")
     
@@ -124,6 +121,28 @@ def load_fb15k237_relations(data_dir: str) -> Dict[str, str]:
     
     return relations
 
+def load_fb15k_entity_names(data_dir: str) -> Dict[str, str]:
+    """Load FB15k entity names.
+    
+    Args:
+        data_dir: Directory containing FB15k files
+        
+    Returns:
+        Dictionary mapping entity IDs to names
+    """
+    names = {}
+    
+    # Load entity names
+    name_file = os.path.join(data_dir, "FB15k_mid2name.txt")
+    if os.path.exists(name_file):
+        with open(name_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) >= 2:
+                    entity_id = parts[0]
+                    name = parts[1]
+                    names[entity_id] = name        
+    return names
 
 def preprocess_fb15k237_triplets(
     data_dir: str,
@@ -144,6 +163,9 @@ def preprocess_fb15k237_triplets(
     
     # Load entity descriptions and relation names
     print("Loading entity descriptions...")
+
+    entity_names = load_fb15k_entity_names(data_dir)
+
     entity_descriptions = load_fb15k_entity_descriptions(data_dir)
     
     print("Loading relation names...")
@@ -189,6 +211,15 @@ def preprocess_fb15k237_triplets(
                     # Write processed triplet
                     outfile.write(f"{head}\t{relation}\t{tail}\t{head_desc}\t{rel_desc}\t{tail_desc}\n")
     
+    # Save Names, Descriptions and Relation Name
+    with open(output_path / "entity_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_names, f, ensure_ascii=False, indent=4)
+        
+    with open(output_path / "entity_id2description.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_descriptions, f, ensure_ascii=False, indent=4)
+
+    with open(output_path / "relation_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(relation_names, f, ensure_ascii=False, indent=4)
     print(f"Preprocessing complete. Files saved to {output_path}")
 
 

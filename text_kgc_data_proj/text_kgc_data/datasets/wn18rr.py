@@ -1,5 +1,6 @@
 """WN18RR dataset processing functions."""
 
+import json
 import os
 import subprocess
 import shutil
@@ -201,14 +202,14 @@ def process_wn18rr_dataset(data_dir: str, output_dir: str) -> None:
     output_path.mkdir(parents=True, exist_ok=True)
     
     print("Loading WN18RR entity names...")
-    entity_id2name = create_entity_id2name_wn18rr(data_dir)
+    entity_id2name = create_entity_id2name_wn18rr(Path(data_dir)/'wordnet-mlj12-definitions.txt')
     
     print("Loading WN18RR entity descriptions...")
-    entity_id2description = create_entity_id2description_wn18rr(data_dir)
-    
+    entity_id2description = create_entity_id2description_wn18rr(Path(data_dir)/'wordnet-mlj12-definitions.txt')
+
     print("Loading WN18RR relation names...")
-    relation_id2name = create_relation_id2name_wn18rr(data_dir)
-    
+    relation_id2name = create_relation_id2name_wn18rr(Path(data_dir)/'relations.dict')
+
     # Combine entity names and descriptions (prioritize descriptions)
     entity_descriptions = {}
     for entity_id in set(entity_id2name.keys()) | set(entity_id2description.keys()):
@@ -249,4 +250,14 @@ def process_wn18rr_dataset(data_dir: str, output_dir: str) -> None:
         else:
             print(f"Warning: {input_file} not found, skipping {split} split")
     
+    # Save Names, Descriptions and Relation Name
+    with open(output_path / "entity_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_id2name, f, ensure_ascii=False, indent=4)
+        
+    with open(output_path / "entity_id2description.json", 'w', encoding='utf-8') as f:
+        json.dump(entity_id2description, f, ensure_ascii=False, indent=4)
+
+    with open(output_path / "relation_id2name.json", 'w', encoding='utf-8') as f:
+        json.dump(relation_id2name, f, ensure_ascii=False, indent=4)
+        
     print(f"WN18RR processing complete. Files saved to {output_path}")
