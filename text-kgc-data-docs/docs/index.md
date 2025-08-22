@@ -14,7 +14,7 @@ git submodule add https://github.com/TJ-coding/TextKGCData.git packages/text-kgc
 ### :simple-python: Installation
 
 ```shell {.copy}
-pip install git+https://github.com/TJ-coding/TextKGCData.git@branch#subdirectory=text_kgc_data_proj
+pip install git+https://github.com/TJ-coding/TextKGCData.git@master#subdirectory=text_kgc_data_proj
 ```
 
 ## :octicons-command-palette-16: Command Line Usage
